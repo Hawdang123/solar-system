@@ -1,0 +1,2784 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hawdang Mustafa | Solar Structural & Energy Suite</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            solar: { 400: '#38bdf8', 500: '#0284c7', 600: '#0369a1' },
+            sun: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+Arabic:wght@400;600;700;800;900&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-ku: 'Vazirmatn', 'Noto Sans Arabic', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      font-family: var(--font-ku);
+      background-color: #050811;
+      color: #e2e8f0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-mono { font-family: var(--font-mono); }
+    
+    input[type=range] { accent-color: #38bdf8; }
+
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+      touch-action: none;
+    }
+    
+    .ctrl-btn {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+    .ctrl-btn:active {
+      background: rgba(56, 189, 248, 0.4);
+      color: #ffffff;
+      transform: scale(0.92);
+    }
+
+    /* Print & Proposal PDF Styling */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+      }
+      #splashScreen, header, nav, .no-print, .ctrl-btn, footer {
+        display: none !important;
+      }
+      #report-modal {
+        display: block !important;
+        position: static !important;
+        background: #ffffff !important;
+        color: #0f172a !important;
+        padding: 0 !important;
+        inset: auto !important;
+      }
+      #report-modal-content {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      .report-print-head {
+        border-bottom: 2px solid #0284c7 !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 20px !important;
+      }
+      .bg-slate-900, .bg-slate-950 {
+        background: #f8fafc !important;
+        border: 1px solid #cbd5e1 !important;
+        color: #0f172a !important;
+      }
+      .text-white { color: #0f172a !important; }
+      .text-slate-400 { color: #475569 !important; }
+      .text-slate-300 { color: #334155 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden selection:bg-sky-500 selection:text-white">
+
+  <!-- ================= 1. SPLASH SCREEN ================= -->
+  <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-sky-950/40 via-slate-950 to-slate-950 transition-all duration-700">
+    <div class="text-center px-6 max-w-md">
+      <div class="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-3xl bg-gradient-to-tr from-amber-500 via-sky-400 to-indigo-600 blur-xl opacity-75 animate-pulse"></div>
+        <div class="relative w-20 h-20 rounded-2xl bg-slate-900 border border-sky-400/50 flex items-center justify-center text-amber-400 shadow-2xl">
+          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-amber-300 to-white mb-2 tracking-wide">
+        Hawdang Mustafa
+      </h1>
+      <p class="text-xs sm:text-sm text-sky-400 font-mono tracking-widest uppercase mb-4">
+        Solar Structural & Energy Suite
+      </p>
+      <p id="splash-desc" class="text-xs text-slate-400 mb-8 leading-relaxed">
+        ستراکتۆری ئەندازیاری، بارگرانی ماڵ، حەجمی پاتری، پڕۆژەی ڕووناکی، وێنەی سەربان و کۆمباینەر بۆکس
+      </p>
+
+      <div class="w-48 h-1 bg-slate-800 rounded-full mx-auto overflow-hidden">
+        <div id="splashProgress" class="h-full bg-gradient-to-r from-amber-400 to-sky-400 w-0 transition-all duration-1000"></div>
+      </div>
+      <button onclick="dismissSplash()" class="mt-4 text-[11px] text-sky-400/80 hover:text-sky-300 font-mono">
+        [ دەستبەجێ بەردەوام بە / Continue ]
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 2. MAIN HEADER ================= -->
+  <header class="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 no-print">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500/20 to-sky-500/20 border border-sky-400/40 flex items-center justify-center text-amber-400 font-bold">
+          ⚡
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-base font-black text-white">Hawdang Mustafa</h2>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-950 text-sky-400 border border-sky-800/80 font-mono">PRO SUITE</span>
+          </div>
+          <p id="app-tagline" class="text-xs text-slate-400">ستراکتۆری ئەندازیاری، بارگرانی ماڵ، حەجمی پاتری و داهاتی دارایی</p>
+        </div>
+      </div>
+
+      <!-- Controls: Open PDF Modal + True South + Language Switcher -->
+      <div class="flex items-center gap-2">
+        <button onclick="openReportModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-slate-950 px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-lg transition">
+          <span>📄</span>
+          <span data-i18n="btn_print_proposal">ڕاپۆرتی PDF / چاپ</span>
+        </button>
+
+        <div class="hidden md:flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs text-slate-300 font-mono">
+          <span class="text-emerald-400 font-bold">● True South</span>
+          <span class="text-amber-400">180°</span>
+        </div>
+
+        <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <button onclick="setLanguage('ku')" id="btn-lang-ku" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-sky-500 text-slate-950">کوردی</button>
+          <button onclick="setLanguage('ar')" id="btn-lang-ar" class="px-2.5 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white">عربي</button>
+          <button onclick="setLanguage('en')" id="btn-lang-en" class="px-2.5 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white">EN</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= 3. NAVIGATION TABS ================= -->
+  <div class="max-w-7xl mx-auto w-full px-4 pt-4 no-print">
+    <div class="flex overflow-x-auto gap-2 p-1.5 bg-slate-900 rounded-2xl border border-slate-800 scrollbar-none">
+      <button onclick="switchTab('tab-cad')" id="tab-btn-cad" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 bg-sky-500/20 text-sky-300 border border-sky-500/40">
+        <span>📐</span> <span data-i18n="tab_cad">ئەندازیاری و 3D</span>
+      </button>
+      <button onclick="switchTab('tab-ar')" id="tab-btn-ar" class="tab-btn flex-1 min-w-[140px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>🏠</span> <span data-i18n="tab_ar">وێنەی سەربان (AR)</span>
+      </button>
+      <button onclick="switchTab('tab-load')" id="tab-btn-load" class="tab-btn flex-1 min-w-[155px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>🔋</span> <span data-i18n="tab_load">لۆدی ماڵ و پاتری</span>
+      </button>
+      <button onclick="switchTab('tab-roi')" id="tab-btn-roi" class="tab-btn flex-1 min-w-[145px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>💰</span> <span data-i18n="tab_roi">داهات و پاشەکەوت</span>
+      </button>
+      <button onclick="switchTab('tab-energy')" id="tab-btn-energy" class="tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>☀️</span> <span data-i18n="tab_energy">سیمولەیتەری ٤ وەرز</span>
+      </button>
+      <button onclick="switchTab('tab-electrical')" id="tab-btn-electrical" class="tab-btn flex-1 min-w-[145px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>⚡</span> <span data-i18n="tab_electrical">کارەبا و کێبڵ</span>
+      </button>
+      <button onclick="switchTab('tab-combiner')" id="tab-btn-combiner" class="tab-btn flex-1 min-w-[145px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent">
+        <span>🧰</span> <span data-i18n="tab_combiner">کۆمباینەر بۆکس</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= 4. BODY CONTENT ================= -->
+  <main class="max-w-7xl mx-auto w-full p-4 flex-1">
+
+    <!-- ================= TAB 1: CAD & 3D VISUALIZER ================= -->
+    <section id="tab-cad" class="tab-view block space-y-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Controls Column -->
+        <div class="lg:col-span-5 space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <h3 class="text-sm font-bold text-white mb-4 pb-2 border-b border-slate-800 flex items-center justify-between">
+              <span data-i18n="structure_config">پێوانە و جۆری ستراکتۆر</span>
+              <span class="text-[11px] text-sky-400 font-mono" id="kwp-badge">4.68 kWp</span>
+            </h3>
+
+            <!-- 5 Frame Types -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold text-slate-300 mb-2" data-i18n="frame_type_label">شێوازی ستراکتۆر هەڵبژێرە:</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                <button onclick="setShape('a_frame')" id="shape-btn-a_frame" class="shape-opt p-2.5 rounded-xl border border-sky-500 bg-sky-500/20 text-sky-300 font-bold text-center transition">
+                  <span class="block text-base mb-1">📐</span>
+                  <span data-i18n="shape_a_frame">A-Frame قاعیدە</span>
+                </button>
+                <button onclick="setShape('sandwich')" id="shape-btn-sandwich" class="shape-opt p-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-medium text-center transition">
+                  <span class="block text-base mb-1">🏭</span>
+                  <span data-i18n="shape_sandwich">سەندویچ پەناڵ</span>
+                </button>
+                <button onclick="setShape('canopy')" id="shape-btn-canopy" class="shape-opt p-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-medium text-center transition">
+                  <span class="block text-base mb-1">⛺</span>
+                  <span data-i18n="shape_canopy">کەپری بەرز (Pergola)</span>
+                </button>
+                <button onclick="setShape('monopole')" id="shape-btn-monopole" class="shape-opt p-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-medium text-center transition">
+                  <span class="block text-base mb-1">⚓</span>
+                  <span data-i18n="shape_monopole">مۆنۆپۆڵ (T-Pole)</span>
+                </button>
+                <button onclick="setShape('carport')" id="shape-btn-carport" class="shape-opt p-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-medium text-center transition col-span-2 sm:col-span-1">
+                  <span class="block text-base mb-1">🚗</span>
+                  <span data-i18n="shape_carport">کارپۆرت (Carport)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Tiers (1, 2, 3) -->
+            <div class="mb-4">
+              <label class="block text-xs font-semibold text-slate-300 mb-1.5" data-i18n="tiers_label">تەبەقە لەسەر یەک بە درێژایی شیپ (Tiers):</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="setTiers(1)" id="tier-btn-1" class="tier-opt py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs font-bold text-slate-400 transition">١ تەبەقە</button>
+                <button onclick="setTiers(2)" id="tier-btn-2" class="tier-opt py-2 rounded-xl border border-sky-500 bg-sky-500/20 text-xs font-bold text-sky-300 transition">٢ تەبەقە (باو)</button>
+                <button onclick="setTiers(3)" id="tier-btn-3" class="tier-opt py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs font-bold text-slate-400 transition">٣ تەبەقە</button>
+              </div>
+            </div>
+
+            <!-- Panels & Wattage Inputs -->
+            <div class="grid grid-cols-2 gap-3 mb-4">
+              <div>
+                <label class="block text-xs text-slate-400 mb-1" data-i18n="panel_count">ژمارەی پەنال:</label>
+                <input type="number" id="in-panels" value="8" min="2" max="64" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-sky-400 font-mono outline-none focus:border-sky-500" oninput="recalculateEngineering()">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 mb-1" data-i18n="panel_watt">واتی پەنال:</label>
+                <input type="number" id="in-watt" value="585" min="300" max="750" step="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-amber-400 font-mono outline-none focus:border-sky-500" oninput="recalculateEngineering()">
+              </div>
+            </div>
+
+            <!-- Tilt Angle Slider -->
+            <div class="mb-4 bg-slate-950 p-3 rounded-xl border border-slate-800">
+              <div class="flex justify-between items-center mb-1 text-xs">
+                <span class="font-semibold text-slate-300" data-i18n="tilt_angle">پلەی لاری (Tilt):</span>
+                <span id="lbl-tilt-val" class="font-mono font-bold text-amber-400">28°</span>
+              </div>
+              <input type="range" id="in-tilt" min="5" max="45" value="28" class="w-full h-1.5 bg-slate-800 rounded cursor-pointer" oninput="recalculateEngineering()">
+              <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+                <span>10° (سەندویچ)</span>
+                <span class="text-emerald-400 font-bold">28°-30° (کوردستان)</span>
+                <span>45° (زستان)</span>
+              </div>
+            </div>
+
+            <!-- Front Leg Slider (Clearance) -->
+            <div>
+              <div class="flex justify-between items-center mb-1 text-xs">
+                <span class="font-semibold text-slate-300" data-i18n="front_leg_label">بەرزی پایەی پێشەوە (h1):</span>
+                <span id="lbl-front-val" class="font-mono font-bold text-sky-400">0.45 m</span>
+              </div>
+              <input type="range" id="in-front-leg" min="0.1" max="2.6" step="0.05" value="0.45" class="w-full h-1.5 bg-slate-800 rounded cursor-pointer" oninput="recalculateEngineering()">
+            </div>
+          </div>
+
+          <!-- Compass Card: True South 180 -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center gap-4">
+            <div class="relative w-16 h-16 rounded-full border-2 border-dashed border-sky-400 flex items-center justify-center shrink-0 bg-slate-950">
+              <span class="text-[9px] font-bold text-red-500 absolute top-1 font-mono">N</span>
+              <span class="text-[9px] font-bold text-emerald-400 absolute bottom-1 font-mono">S</span>
+              <div class="w-1 h-10 bg-gradient-to-t from-emerald-400 via-white to-red-500 rounded-full"></div>
+            </div>
+            <div>
+              <span class="text-xs font-bold text-white block" data-i18n="compass_title">ئاراستەی باشووری تەواو (True South 180°):</span>
+              <span class="text-[11px] text-slate-400 leading-snug block mt-1" data-i18n="compass_desc">
+                پەنالەکان بە تەواوی ئاراستەی باشووری جوگرافی دەکرێن بەبێ لادان بۆ بەدەستهێنانی بەرزترین بەرهەمی کارەبا.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calculated Values & Live Visualizer Column -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Exact Dimensions Grid -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 block" data-i18n="dim_front">پایەی پێشەوە (h1):</span>
+              <span id="val-front-leg" class="text-base sm:text-lg font-bold font-mono text-sky-400">0.45 m</span>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-2xl border border-sky-500/40">
+              <span class="text-[11px] text-slate-400 block" data-i18n="dim_back">پایەی دواوە (h2):</span>
+              <span id="val-back-leg" class="text-base sm:text-lg font-bold font-mono text-amber-400">2.60 m</span>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 block" data-i18n="dim_slope">درێژی شیپ (Slope):</span>
+              <span id="val-slope-len" class="text-base sm:text-lg font-bold font-mono text-emerald-400">4.58 m</span>
+            </div>
+            <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800">
+              <span class="text-[11px] text-slate-400 block" data-i18n="dim_base">پانی بنکە (Run):</span>
+              <span id="val-base-span" class="text-base sm:text-lg font-bold font-mono text-white">4.04 m</span>
+            </div>
+          </div>
+
+          <!-- Live 3D Vector Visualizer Canvas -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-2xl relative">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+              <h4 class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                <span>🧊</span> <span data-i18n="vis_title">دیتنی ڕاستەوخۆی ستراکتۆر (Live 360° Visualizer)</span>
+              </h4>
+              <span id="hud-shape-name" class="text-[11px] font-mono text-sky-400 bg-sky-950 px-2.5 py-0.5 rounded-lg border border-sky-800/80">A-Frame Truss</span>
+            </div>
+
+            <div class="w-full h-[360px] rounded-xl overflow-hidden bg-slate-950 relative border border-slate-800">
+              <canvas id="structure-canvas"></canvas>
+
+              <!-- Navigation Controls -->
+              <div class="absolute bottom-3 right-3 flex flex-col gap-1 z-10">
+                <div class="flex gap-1">
+                  <button onclick="orbitStructure(-0.15)" class="ctrl-btn w-8 h-8 rounded-lg text-xs font-bold" title="سوڕاندنی چەپ">◀</button>
+                  <button onclick="resetStructureView()" class="ctrl-btn w-8 h-8 rounded-lg text-xs font-mono font-bold text-amber-400" title="ڕێکخستنەوە">●</button>
+                  <button onclick="orbitStructure(0.15)" class="ctrl-btn w-8 h-8 rounded-lg text-xs font-bold" title="سوڕاندنی ڕاست">▶</button>
+                </div>
+                <div class="flex gap-1">
+                  <button onclick="zoomStructure(0.15)" class="ctrl-btn w-12 h-7 rounded-lg text-xs font-bold" title="نزیککردنەوە">+</button>
+                  <button onclick="zoomStructure(-0.15)" class="ctrl-btn w-12 h-7 rounded-lg text-xs font-bold" title="دوورخستنەوە">-</button>
+                </div>
+              </div>
+
+              <div class="absolute bottom-3 left-3 text-[10px] text-slate-400 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-800 pointer-events-none">
+                🖱️ بە پەنجە یان ماوس ٣٦٠ پلە دەسوڕێتەوە
+              </div>
+            </div>
+          </div>
+
+          <!-- Bill of Materials (BOM) Table -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl">
+            <h4 class="text-xs font-bold text-white mb-3 flex items-center justify-between">
+              <span data-i18n="bom_title">خشتەی کەرەستە و کێشی ئاسن (Bill of Materials):</span>
+              <span id="total-weight-badge" class="text-[11px] font-mono text-amber-400 font-bold">~ 180 kg</span>
+            </h4>
+            <div class="overflow-x-auto text-xs">
+              <table class="w-full text-right border-collapse">
+                <thead>
+                  <tr class="text-slate-400 border-b border-slate-800 text-[11px]">
+                    <th class="py-2" data-i18n="bom_col_item">کەرەستە</th>
+                    <th class="py-2" data-i18n="bom_col_spec">قیاس / تایبەتمەندی</th>
+                    <th class="py-2 text-center" data-i18n="bom_col_qty">ژمارە</th>
+                    <th class="py-2 text-left font-mono" data-i18n="bom_col_weight">کێش</th>
+                  </tr>
+                </thead>
+                <tbody id="bom-table-body" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 2: ROOF AR PERSPECTIVE OVERLAY ================= -->
+    <section id="tab-ar" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>🏠</span> <span data-i18n="ar_title">دیتنی ستراکتۆر لەسەر وێنەی سەربان (AR Roof Perspective)</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="ar_desc">
+              ستراکتۆر و پەنالە هەڵبژێردراوەکان ڕاستەوخۆ دەخرێنە سەر وێنەی سەربانی واقیعی بە کۆنتڕۆڵی قەبارە و شوێن.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <label class="bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl shadow cursor-pointer transition flex items-center gap-1.5">
+              <span>📷</span> <span data-i18n="ar_btn_upload">بارکردنی وێنەی سەربان</span>
+              <input type="file" id="ar-file-input" accept="image/*" class="hidden" onchange="handleRoofUpload(event)">
+            </label>
+            <button onclick="resetArControls()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl border border-slate-700 transition" data-i18n="ar_btn_reset">
+              ڕێکخستنەوە
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-4 space-y-4">
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+              <label class="block text-xs font-semibold text-slate-300" data-i18n="ar_preset_label">سەربانی نموونەیی هەڵبژێرە:</label>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <button onclick="setArPreset('concrete')" id="btn-ar-concrete" class="ar-preset-btn p-2 rounded-xl border border-sky-500 bg-sky-500/20 text-sky-300 font-bold text-center transition">
+                  <span class="block text-base mb-1">🏢</span>
+                  <span class="text-[11px]" data-i18n="ar_preset_concrete">کۆنکرێت</span>
+                </button>
+                <button onclick="setArPreset('sandwich')" id="btn-ar-sandwich" class="ar-preset-btn p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-medium text-center transition">
+                  <span class="block text-base mb-1">🏭</span>
+                  <span class="text-[11px]" data-i18n="ar_preset_sandwich">سەندویچ</span>
+                </button>
+                <button onclick="setArPreset('villa')" id="btn-ar-villa" class="ar-preset-btn p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-medium text-center transition">
+                  <span class="block text-base mb-1">🏡</span>
+                  <span class="text-[11px]" data-i18n="ar_preset_villa">تەراس/حەوشە</span>
+                </button>
+              </div>
+
+              <!-- Tuning Sliders -->
+              <div class="pt-2 space-y-3 border-t border-slate-900">
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span data-i18n="ar_scale">قەبارە و زووم (Scale):</span>
+                    <span id="lbl-ar-scale" class="font-mono font-bold text-sky-400">1.0x</span>
+                  </div>
+                  <input type="range" id="in-ar-scale" min="0.4" max="2.2" step="0.05" value="1.0" class="w-full h-1.5 bg-slate-800 rounded cursor-pointer" oninput="updateArOverlay()">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span data-i18n="ar_pos_y">شوێن بە بەرزی (Y Position):</span>
+                    <span id="lbl-ar-pos-y" class="font-mono font-bold text-amber-400">0 px</span>
+                  </div>
+                  <input type="range" id="in-ar-pos-y" min="-180" max="180" step="5" value="0" class="w-full h-1.5 bg-slate-800 rounded cursor-pointer" oninput="updateArOverlay()">
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] text-slate-300 mb-1">
+                    <span data-i18n="ar_rot">گۆشەی ئاراستە (Rotation):</span>
+                    <span id="lbl-ar-rot" class="font-mono font-bold text-emerald-400">0.35 rad</span>
+                  </div>
+                  <input type="range" id="in-ar-rot" min="-1.5" max="1.5" step="0.05" value="0.35" class="w-full h-1.5 bg-slate-800 rounded cursor-pointer" oninput="updateArOverlay()">
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-2xl border border-slate-800 text-xs text-slate-400 space-y-1.5">
+              <span class="text-sky-400 font-bold block" data-i18n="ar_tip_title">💡 ئامۆژگاری بۆ دەرچوونی وێنە:</span>
+              <p class="text-[11px] leading-relaxed" data-i18n="ar_tip_desc">
+                دەتوانیت وێنەی ڕاستەقینەی سەربانی کڕیار باربکەیت و بە کۆنتڕۆڵەکان ستراکتۆرەکە ڕێک لەسەر ڕووی سەربانەکە دابنێیت تا موشتەری پێش جێبەجێکردن دیمەنە تەواوەکەی ببینێت.
+              </p>
+            </div>
+          </div>
+
+          <!-- AR Viewport -->
+          <div class="lg:col-span-8">
+            <div class="w-full h-[440px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 relative shadow-2xl flex items-center justify-center">
+              <canvas id="ar-canvas" class="w-full h-full block"></canvas>
+              <div class="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-xl border border-slate-800 text-xs font-mono text-sky-400">
+                <span id="ar-status-badge">● Concrete Roof Preset</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB 3: LOAD AUDIT & BATTERY MATRIX ================= -->
+    <section id="tab-load" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>🔋</span> <span data-i18n="load_title">هەژمارکردنی بارگرانی ماڵ و حەجمی پاتری (Load & Battery Autonomy)</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="load_desc">
+              لیستی ئامێرەکانی ماڵ بە وات و ئەمپێر، و هەژمارکردنی کاتژمێری ئیشکردنی پاتری (وەک ١٥ کەی-دەبلیو-ئێچ بۆ چەند ئەمپێر و چەند کاتژمێر).
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="resetAppliancePresets()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-xl border border-slate-700 transition" data-i18n="btn_reset_appliances">
+              گەڕانەوە بۆ پێشوەختە
+            </button>
+            <button onclick="addCustomApplianceRow()" class="bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-slate-950 font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg transition flex items-center gap-1.5">
+              <span>➕</span> <span data-i18n="btn_add_appliance">زیادکردنی ئامێر</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Summary Metric Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="bg-slate-950 p-4 rounded-2xl border border-sky-500/30">
+            <span class="text-[11px] text-slate-400 block" data-i18n="total_peak_power">کۆی بەکارهێنانی لەحزەیی (Peak Load):</span>
+            <span id="load-sum-watts" class="text-lg sm:text-xl font-black font-mono text-sky-300">3,420 W</span>
+            <span id="load-sum-amps" class="text-xs font-mono text-amber-400 block mt-1">~ 15.5 A لەسەر 220V</span>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-amber-500/30">
+            <span class="text-[11px] text-slate-400 block" data-i18n="daily_energy_consumption">کۆی وزەی ڕۆژانەی ماڵەکە:</span>
+            <span id="load-sum-kwh" class="text-lg sm:text-xl font-black font-mono text-amber-300">18.4 kWh / ڕۆژ</span>
+            <span class="text-xs text-slate-500 block mt-1" data-i18n="daily_energy_sub">لەبەرچاوگرتنی کاتژمێری ئیشکردن</span>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-emerald-500/40">
+            <span class="text-[11px] text-slate-400 block" data-i18n="battery_runtime_display">ماوەی ڕاگرتنی پاتری بە لۆدی هەنووکەیی:</span>
+            <span id="battery-runtime-hours" class="text-lg sm:text-xl font-black font-mono text-emerald-300">~ 3.9 کاتژمێر</span>
+            <span id="battery-runtime-sub" class="text-xs font-mono text-emerald-400/80 block mt-1">بۆ پاتری 15 kWh بە 90% DoD</span>
+          </div>
+        </div>
+
+        <!-- Battery Capacity Picker -->
+        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                <span>🔋</span> <span data-i18n="battery_size_title">حەجم و توانای پاتری (LiFePO4 48V / High-Voltage):</span>
+              </h4>
+              <p class="text-[11px] text-slate-400 mt-0.5" data-i18n="battery_size_sub">
+                حەجمی پاتری هەڵبژێرە تا بزانیت بۆ لۆدی ماڵەکەت و ئەمپێری جیاواز چەند کاتژمێر دەمێنێتەوە.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400" data-i18n="custom_kwh_input">حەجمی دیاریکراو (kWh):</span>
+              <input type="number" id="in-custom-battery" value="15" min="2" max="100" step="1" class="w-20 bg-slate-900 border border-emerald-500/50 rounded-xl px-2.5 py-1 text-sm font-bold text-emerald-400 font-mono text-center outline-none" oninput="setCustomBatteryCapacity(this.value)">
+            </div>
+          </div>
+
+          <!-- Quick Presets -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
+            <button onclick="setBatteryCapacity(5)" id="btn-bat-5" class="bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition">
+              <span class="block font-mono text-sm text-white">5 kWh</span>
+              <span class="text-[10px] text-slate-500 font-mono">100Ah @ 48V</span>
+            </button>
+            <button onclick="setBatteryCapacity(10)" id="btn-bat-10" class="bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition">
+              <span class="block font-mono text-sm text-white">10 kWh</span>
+              <span class="text-[10px] text-slate-500 font-mono">200Ah @ 48V</span>
+            </button>
+            <button onclick="setBatteryCapacity(15)" id="btn-bat-15" class="bat-preset-btn py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold transition">
+              <span class="block font-mono text-sm text-emerald-300">15 kWh (پێشنیار)</span>
+              <span class="text-[10px] text-emerald-400 font-mono">300Ah @ 48V</span>
+            </button>
+            <button onclick="setBatteryCapacity(20)" id="btn-bat-20" class="bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition">
+              <span class="block font-mono text-sm text-white">20 kWh</span>
+              <span class="text-[10px] text-slate-500 font-mono">400Ah @ 48V</span>
+            </button>
+            <button onclick="setBatteryCapacity(30)" id="btn-bat-30" class="bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition col-span-2 sm:col-span-1">
+              <span class="block font-mono text-sm text-white">30 kWh</span>
+              <span class="text-[10px] text-slate-500 font-mono">600Ah @ 48V</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Matrix: Capacity vs Continuous Amps -->
+        <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-900">
+            <h4 class="text-xs font-bold text-white flex items-center gap-2">
+              <span>⏱️</span> <span data-i18n="amps_hours_matrix_title">خشتەی بەراوردی کاتژمێری مانەوەی پاتری بەپێی کێشانی ئەمپێری جیاواز (220V):</span>
+            </h4>
+            <span id="matrix-active-kwh-badge" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-lg border border-emerald-500/30">15 kWh Battery</span>
+          </div>
+
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs text-center font-mono" id="battery-matrix-container">
+            <!-- Dynamic Cards -->
+          </div>
+        </div>
+
+        <!-- Household Appliance Interactive Table -->
+        <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 space-y-3">
+          <h4 class="text-xs font-bold text-white flex items-center justify-between">
+            <span data-i18n="appliances_table_title">لیستی ئامێرەکانی ناو ماڵ و واتی کارکردن:</span>
+            <span class="text-[10px] text-slate-500 font-sans" data-i18n="appliances_table_note">دەتوانیت ژمارە، وات، و کاتژمێری ئیشکردن دەستکاری بکەیت</span>
+          </h4>
+
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-right border-collapse">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-800 text-[11px]">
+                  <th class="py-2.5" data-i18n="col_appliance_name">ناوی ئامێر</th>
+                  <th class="py-2.5 text-center" data-i18n="col_appliance_qty">ژمارە</th>
+                  <th class="py-2.5 text-center" data-i18n="col_appliance_watts">وات (Watt)</th>
+                  <th class="py-2.5 text-center" data-i18n="col_appliance_amps">ئەمپێر (220V)</th>
+                  <th class="py-2.5 text-center" data-i18n="col_appliance_hours">کاتژمێر / ڕۆژ</th>
+                  <th class="py-2.5 text-center" data-i18n="col_appliance_daily_kwh">وزەی ڕۆژانە</th>
+                  <th class="py-2.5 text-center no-print" data-i18n="col_appliance_action">سڕینەوە</th>
+                </tr>
+              </thead>
+              <tbody id="appliances-tbody" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+                <!-- Dynamic Appliance Rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 4: FINANCIAL ROI & PAYBACK ================= -->
+    <section id="tab-roi" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>💰</span> <span data-i18n="roi_title">حیساباتی دارایی، داهات و گەڕانەوەی پارەی سەرمایە</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="roi_desc">
+              هەژمارکردنی پاشەکەوتی مانگانە و ساڵانەی پسوولەی پڕۆژەی ڕووناکی و پارەی مۆلیدەی گەڕەک لەگەڵ کاتی گەڕانەوەی سەرمایە.
+            </p>
+          </div>
+          <div class="bg-emerald-500/10 border border-emerald-500/30 px-4 py-2 rounded-xl text-left">
+            <span class="text-[10px] text-emerald-400 block font-semibold" data-i18n="payback_duration_label">ماوەی گەڕانەوەی سەرمایە (Payback):</span>
+            <span id="stat-payback-years" class="text-lg font-black font-mono text-emerald-300">~ 2.8 ساڵ</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Investment -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-sky-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>💵</span> <span data-i18n="investment_card">خەرجی دانانی سیستەمەکە</span>
+            </h4>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="cost_usd">کۆی خەرجی سیستەمەکە ($ دۆلار):</label>
+              <input type="number" id="in-system-cost" value="4500" min="500" step="50" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-sky-400 font-mono outline-none focus:border-sky-500" oninput="calculateROI()">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="exchange_rate">نرخی ١٠٠ دۆلار (دینار):</label>
+              <input type="number" id="in-exchange-rate" value="150000" min="120000" step="1000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-white font-mono outline-none focus:border-sky-500" oninput="calculateROI()">
+            </div>
+          </div>
+
+          <!-- Runaki Grid -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-amber-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>⚡</span> <span data-i18n="runaki_card">کارەبای نیشتمانی / پڕۆژەی ڕووناکی</span>
+            </h4>
+            <div>
+              <label class="block text-[11px] text-slate-300 font-bold mb-1" data-i18n="monthly_consumption_label">بڕی بەکارهێنانی مانگانە (kWh):</label>
+              <div class="flex items-center bg-slate-900 border border-amber-500/50 rounded-xl px-3 py-1.5">
+                <input type="number" id="in-monthly-consumption" value="800" min="50" max="50000" step="25" class="w-full bg-transparent text-sm font-bold text-amber-400 font-mono outline-none" oninput="calculateROI()">
+                <span class="text-xs text-slate-500 font-mono">kWh</span>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="runaki_type">جۆری بەشداربووی ڕووناکی:</label>
+              <select id="in-runaki-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-amber-300 outline-none focus:border-amber-500" onchange="onRunakiTypeChange()">
+                <option value="72" data-i18n="opt_residential">ماڵان - تاریفەی ئاسایی (72 IQD / kWh)</option>
+                <option value="115" data-i18n="opt_high_res">ماڵان - قۆناغی دووەم (115 IQD / kWh)</option>
+                <option value="130" data-i18n="opt_commercial">بازرگانی و دوکان (130 IQD / kWh)</option>
+                <option value="160" data-i18n="opt_industrial">پیشەسازی و کارگە (160 IQD / kWh)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="custom_kwh_rate">نرخی کیلۆوات کاتژمێر (دینار):</label>
+              <input type="number" id="in-runaki-rate" value="72" min="10" max="400" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-amber-400 font-mono outline-none focus:border-amber-500" oninput="calculateROI()">
+            </div>
+          </div>
+
+          <!-- Neighborhood Generator -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>🔌</span> <span data-i18n="generator_card">کارەبای مۆلیدەی گەڕەک</span>
+            </h4>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="gen_amps">ئەمپێری بڕاو لە مۆلیدەی گەڕەک:</label>
+              <input type="number" id="in-gen-amps" value="10" min="0" max="60" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-emerald-400 font-mono outline-none focus:border-emerald-500" oninput="calculateROI()">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-400 mb-1" data-i18n="gen_price_per_amp">نرخی یەک ئەمپێری مانگانە (دینار):</label>
+              <input type="number" id="in-gen-price" value="16000" min="5000" step="500" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm font-bold text-white font-mono outline-none focus:border-emerald-500" oninput="calculateROI()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Before vs After Utility Comparison -->
+        <div class="bg-gradient-to-r from-amber-950/30 via-slate-950 to-sky-950/30 p-4 rounded-2xl border border-amber-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+              <span>🧾</span> <span data-i18n="bill_comparison_title">بەراوردی پسوولەی ڕووناکی پێش و پاش سۆلار:</span>
+            </span>
+            <div class="text-[11px] text-slate-400">
+              <span data-i18n="old_bill_label">پسوولەی پێش سۆلار:</span> 
+              <strong id="out-old-bill" class="text-red-400 font-mono">57,600 دینار</strong>
+              <span class="mx-2 text-slate-600">|</span>
+              <span data-i18n="new_bill_label">پسوولەی دوای سۆلار:</span> 
+              <strong id="out-new-bill" class="text-emerald-400 font-mono">11,700 دینار</strong>
+            </div>
+          </div>
+          <div class="bg-slate-900/90 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl self-start sm:self-auto text-left">
+            <span class="text-[10px] text-emerald-400 block" data-i18n="solar_coverage_label">ڕێژەی دابینکردن بە سۆلار:</span>
+            <span id="out-solar-coverage" class="text-base font-bold font-mono text-emerald-300">~ 80%</span>
+          </div>
+        </div>
+
+        <!-- Savings Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="bg-slate-950 p-4 rounded-2xl border border-amber-500/30">
+            <span class="text-[11px] text-slate-400 block" data-i18n="runaki_annual_saving">پاشەکەوتی ساڵانەی ڕووناکی:</span>
+            <span id="out-runaki-annual" class="text-base sm:text-lg font-bold font-mono text-amber-300">550,800 دینار</span>
+            <span id="out-runaki-annual-usd" class="text-[11px] text-slate-400 font-mono block mt-0.5">(~ $367)</span>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-emerald-500/30">
+            <span class="text-[11px] text-slate-400 block" data-i18n="gen_annual_saving">پاشەکەوتی ساڵانەی مۆلیدە:</span>
+            <span id="out-gen-annual" class="text-base sm:text-lg font-bold font-mono text-emerald-300">1,920,000 دینار</span>
+            <span id="out-gen-annual-usd" class="text-[11px] text-slate-400 font-mono block mt-0.5">(~ $1,280)</span>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-sky-500/40">
+            <span class="text-[11px] text-slate-400 block" data-i18n="total_monthly_saving">کۆی پاشەکەوتی مانگانە:</span>
+            <span id="out-total-monthly" class="text-base sm:text-lg font-bold font-mono text-sky-300">~ 205,900 دینار</span>
+            <span id="out-total-monthly-usd" class="text-[11px] text-slate-400 font-mono block mt-0.5">(~ $137 / مانگ)</span>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-purple-500/30">
+            <span class="text-[11px] text-slate-400 block" data-i18n="total_annual_saving">کۆی پاشەکەوتی ساڵانە:</span>
+            <span id="out-total-annual" class="text-base sm:text-lg font-bold font-mono text-purple-300">~ 2,470,800 دینار</span>
+            <span id="out-total-annual-usd" class="text-[11px] text-slate-400 font-mono block mt-0.5">(~ $1,647 / ساڵ)</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 5: 4 SEASONS & 12 MONTHS ================= -->
+    <section id="tab-energy" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>☀️</span> <span data-i18n="energy_title">سیمولەیتەری بەرهەمی کارەبا بۆ هەر ٤ وەرز و ١٢ مانگ</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="energy_desc">
+              تایبەت بە هەرێمی کوردستان و عێراق (هەولێر، سلێمانی، دهۆک، کەرکووک) بە پێوانەی تیشکی خۆر (PSH) و داشکاندنی گەرمای هاوین.
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <div class="bg-sky-500/10 border border-sky-500/30 px-3.5 py-1.5 rounded-xl">
+              <span class="text-[10px] text-sky-400 block" data-i18n="annual_total_kwh">کۆی ساڵانە:</span>
+              <span id="stat-annual-kwh" class="text-base font-black font-mono text-sky-300">7,650 kWh</span>
+            </div>
+            <div class="bg-amber-500/10 border border-amber-500/30 px-3.5 py-1.5 rounded-xl">
+              <span class="text-[10px] text-amber-400 block" data-i18n="daily_avg_label">تێکڕای ڕۆژانە:</span>
+              <span id="stat-daily-kwh" class="text-base font-black font-mono text-amber-300">21.0 kWh</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Seasons Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-slate-950 p-4 rounded-2xl border border-sky-500/30 relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-sky-300 flex items-center gap-1.5">
+                <span>❄️</span> <span data-i18n="season_winter">زستان</span>
+              </span>
+              <span class="text-[10px] bg-sky-950 text-sky-400 px-2 py-0.5 rounded-full font-mono">3.4 PSH</span>
+            </div>
+            <div class="text-xs space-y-1.5 font-mono">
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="day_label">ڕۆژێک:</span>
+                <span id="winter-day" class="text-sky-300 font-bold">13.5 kWh</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="month_label">مانگێک:</span>
+                <span id="winter-month" class="text-white font-bold">405 kWh</span>
+              </div>
+              <div class="flex justify-between pt-1 text-slate-300 font-sans font-bold">
+                <span data-i18n="season_tot_label">کۆی وەرز:</span>
+                <span id="winter-tot" class="text-amber-400 font-mono">1,215 kWh</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-emerald-500/30 relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-emerald-300 flex items-center gap-1.5">
+                <span>🌱</span> <span data-i18n="season_spring">بەهار</span>
+              </span>
+              <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-full font-mono">5.8 PSH</span>
+            </div>
+            <div class="text-xs space-y-1.5 font-mono">
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="day_label">ڕۆژێک:</span>
+                <span id="spring-day" class="text-emerald-300 font-bold">23.0 kWh</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="month_label">مانگێک:</span>
+                <span id="spring-month" class="text-white font-bold">690 kWh</span>
+              </div>
+              <div class="flex justify-between pt-1 text-slate-300 font-sans font-bold">
+                <span data-i18n="season_tot_label">کۆی وەرز:</span>
+                <span id="spring-tot" class="text-amber-400 font-mono">2,070 kWh</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-amber-500/30 relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-amber-300 flex items-center gap-1.5">
+                <span>🔥</span> <span data-i18n="season_summer">هاوین</span>
+              </span>
+              <span class="text-[10px] bg-amber-950 text-amber-400 px-2 py-0.5 rounded-full font-mono">7.1 PSH</span>
+            </div>
+            <div class="text-xs space-y-1.5 font-mono">
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="day_label">ڕۆژێک:</span>
+                <span id="summer-day" class="text-amber-300 font-bold">28.2 kWh</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="month_label">مانگێک:</span>
+                <span id="summer-month" class="text-white font-bold">846 kWh</span>
+              </div>
+              <div class="flex justify-between pt-1 text-slate-300 font-sans font-bold">
+                <span data-i18n="season_tot_label">کۆی وەرز:</span>
+                <span id="summer-tot" class="text-amber-400 font-mono">2,538 kWh</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-4 rounded-2xl border border-orange-500/30 relative">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-bold text-orange-300 flex items-center gap-1.5">
+                <span>🍂</span> <span data-i18n="season_autumn">پایز</span>
+              </span>
+              <span class="text-[10px] bg-orange-950 text-orange-400 px-2 py-0.5 rounded-full font-mono">5.2 PSH</span>
+            </div>
+            <div class="text-xs space-y-1.5 font-mono">
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="day_label">ڕۆژێک:</span>
+                <span id="autumn-day" class="text-orange-300 font-bold">20.5 kWh</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900 text-slate-400">
+                <span data-i18n="month_label">مانگێک:</span>
+                <span id="autumn-month" class="text-white font-bold">615 kWh</span>
+              </div>
+              <div class="flex justify-between pt-1 text-slate-300 font-sans font-bold">
+                <span data-i18n="season_tot_label">کۆی وەرز:</span>
+                <span id="autumn-tot" class="text-amber-400 font-mono">1,845 kWh</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12-Month Table -->
+        <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800">
+          <h4 class="text-xs font-bold text-white mb-3" data-i18n="twelve_months_title">بەرهەمی کارەبا بە جیا بۆ هەموو ١٢ مانگەکە:</h4>
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-right border-collapse">
+              <thead>
+                <tr class="text-slate-400 border-b border-slate-800 text-[11px]">
+                  <th class="py-2" data-i18n="col_month">مانگ</th>
+                  <th class="py-2" data-i18n="col_season">وەرز</th>
+                  <th class="py-2 text-center" data-i18n="col_psh">تیشک (PSH)</th>
+                  <th class="py-2 font-mono text-center" data-i18n="col_day_kwh">ڕۆژانە</th>
+                  <th class="py-2 font-mono text-center" data-i18n="col_month_kwh">کۆی مانگ</th>
+                  <th class="py-2 font-mono text-left" data-i18n="col_battery_ah">پاتری (48V)</th>
+                </tr>
+              </thead>
+              <tbody id="months-table-body" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 6: ELECTRICAL & CABLE ================= -->
+    <section id="tab-electrical" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-6">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>⚡</span> <span data-i18n="elec_title">ئەندازیاری کارەبا، ئینڤێرتەر و کێبڵەکان</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="elec_desc">
+              حیسابکردنی قەبارەی ئینڤێرتەر، ڤۆڵتیەی سترینگ ($V_{oc}$)، ئەستووری وایەر (DC Drop) و مەودای سێبەری زستان.
+            </p>
+          </div>
+          <div class="bg-sky-500/10 border border-sky-500/30 px-4 py-2 rounded-xl text-left">
+            <span class="text-[10px] text-sky-400 block font-semibold" data-i18n="rec_inverter_label">ئینڤێرتەری پێشنیارکراو:</span>
+            <span id="stat-inverter-rating" class="text-lg font-black font-mono text-sky-300">5.0 kW Hybrid</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Inverter Sizing -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-sky-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>🔌</span> <span data-i18n="inverter_sizing_title">دیاریکردنی ئینڤێرتەر (Inverter Sizing)</span>
+            </h4>
+            <div class="text-xs space-y-2">
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="dc_array_power">توانای پەنالەکان (DC):</span>
+                <span id="elec-dc-kwp" class="font-bold font-mono text-white">4.68 kWp</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="dc_ac_ratio">ڕێژەی ستاندارد (DC/AC):</span>
+                <span class="font-bold font-mono text-emerald-400">1.15 : 1</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="mppt_range">مەودای ڤۆڵتیەی MPPT:</span>
+                <span class="font-bold font-mono text-sky-300">120V - 450V</span>
+              </div>
+              <div class="pt-1">
+                <span class="text-slate-400 block text-[11px] mb-1" data-i18n="inverter_type_desc">جۆری پێشنیارکراو:</span>
+                <span class="text-amber-400 font-bold block" id="elec-inverter-desc">5kW Hybrid (Deye / Growatt / Solis)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- String & Voc Sizing -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-amber-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>⛓️</span> <span data-i18n="string_sizing_title">بەستنەوەی سترینگ (String Architecture)</span>
+            </h4>
+            <div class="text-xs space-y-2">
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="string_config">پێکهاتەی زنجیرە:</span>
+                <span id="elec-string-config" class="font-bold font-mono text-white">1 String × 8 Modules</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="string_vmp">ڤۆڵتیەی کارکردن (Vmp):</span>
+                <span id="elec-string-vmp" class="font-bold font-mono text-sky-400">~ 336 V</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="string_voc">زۆرترین ڤۆڵتیەی کراوە (Voc):</span>
+                <span id="elec-string-voc" class="font-bold font-mono text-amber-400">~ 408 V</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span class="text-slate-400" data-i18n="string_isc">تەوژمی ئەوپەڕ (Isc):</span>
+                <span class="font-bold font-mono text-emerald-400">14.2 A</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cable & Breaker Sizing -->
+          <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 pb-2 border-b border-slate-900">
+              <span>🛡️</span> <span data-i18n="cable_breaker_title">وایەر و جۆزەی پاراستن (DC Sizing)</span>
+            </h4>
+            <div class="text-xs space-y-2">
+              <div>
+                <label class="block text-[11px] text-slate-400 mb-1" data-i18n="cable_length_label">مەودای وایەر لە سەربان تا ئینڤێرتەر (مەتر):</label>
+                <input type="number" id="in-cable-length" value="18" min="2" max="100" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold text-white font-mono outline-none" oninput="calculateElectrical()">
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="cable_rec">قیاسی وایەری سۆلار:</span>
+                <span id="elec-cable-size" class="font-bold font-mono text-emerald-400">6.0 mm² PV1-F</span>
+              </div>
+              <div class="flex justify-between py-1 border-b border-slate-900">
+                <span class="text-slate-400" data-i18n="voltage_drop">فڕینی ڤۆڵتیە (Voltage Drop):</span>
+                <span id="elec-voltage-drop" class="font-bold font-mono text-sky-400">0.78% (&lt; 2% تەواوە)</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span class="text-slate-400" data-i18n="dc_breaker">جۆزەی پاراستن:</span>
+                <span class="font-bold font-mono text-amber-400">20A / 600V DC + SPD T2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= TAB 7: DC COMBINER BOX SCHEMATIC ================= -->
+    <section id="tab-combiner" class="tab-view hidden space-y-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-2xl space-y-5">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+              <span>🧰</span> <span data-i18n="combiner_title">هێڵکاری ئەندازیاری کۆمباینەر بۆکس (DC Combiner Box Schematic)</span>
+            </h3>
+            <p class="text-xs text-slate-400 mt-1" data-i18n="combiner_desc">
+              سندوقی پیشەسازی دژە-ئاو (IP65) بە ڕەیڵی DIN، فیوزی سۆلار، پارێزەری بروسکە SPD و سویچی سەرەکی بە کێبڵی ڕەنگاوڕەنگ.
+            </p>
+          </div>
+        </div>
+
+        <!-- 2D Schematics SVG -->
+        <div class="w-full bg-slate-950 rounded-2xl p-4 border border-slate-800 flex items-center justify-center overflow-x-auto">
+          <svg viewBox="0 0 740 380" class="w-full max-w-2xl h-auto">
+            <!-- Box Body -->
+            <rect x="40" y="30" width="660" height="320" rx="16" fill="#0f172a" stroke="#334155" stroke-width="3" />
+            <!-- DIN Rail -->
+            <rect x="70" y="170" width="600" height="24" fill="#cbd5e1" stroke="#94a3b8" />
+
+            <!-- DC Fuses String 1 -->
+            <rect x="110" y="120" width="36" height="120" rx="4" fill="#f8fafc" stroke="#dc2626" stroke-width="2" />
+            <text x="128" y="175" fill="#dc2626" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">F1 (+)</text>
+            <text x="128" y="195" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">1000V</text>
+
+            <rect x="160" y="120" width="36" height="120" rx="4" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+            <text x="178" y="175" fill="#0f172a" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">F2 (-)</text>
+            <text x="178" y="195" fill="#64748b" font-size="9" font-family="monospace" text-anchor="middle">1000V</text>
+
+            <!-- DC Fuses String 2 -->
+            <rect x="230" y="120" width="36" height="120" rx="4" fill="#f8fafc" stroke="#dc2626" stroke-width="2" />
+            <text x="248" y="175" fill="#dc2626" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">F3 (+)</text>
+
+            <rect x="280" y="120" width="36" height="120" rx="4" fill="#f8fafc" stroke="#0f172a" stroke-width="2" />
+            <text x="298" y="175" fill="#0f172a" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">F4 (-)</text>
+
+            <!-- Surge Protection Device (SPD) -->
+            <rect x="360" y="115" width="80" height="130" rx="6" fill="#f59e0b" stroke="#d97706" stroke-width="2" />
+            <rect x="375" y="130" width="50" height="20" rx="2" fill="#10b981" />
+            <text x="400" y="144" fill="#ffffff" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">OK / SPD</text>
+            <text x="400" y="180" fill="#000000" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">DC SPD</text>
+            <text x="400" y="200" fill="#000000" font-size="9" font-family="monospace" text-anchor="middle">1000V T2</text>
+
+            <!-- DC Rotary Isolator Switch -->
+            <rect x="490" y="110" width="130" height="140" rx="8" fill="#334155" stroke="#475569" stroke-width="2" />
+            <circle cx="555" cy="170" r="32" fill="#ef4444" stroke="#b91c1c" stroke-width="3" />
+            <rect x="548" y="145" width="14" height="50" rx="3" fill="#fde047" />
+            <text x="555" y="235" fill="#ffffff" font-size="11" font-weight="bold" font-family="monospace" text-anchor="middle">MAIN ISOLATOR</text>
+
+            <!-- Grounding Bar -->
+            <rect x="220" y="310" width="280" height="16" rx="2" fill="#d97706" />
+            <text x="360" y="322" fill="#ffffff" font-size="10" font-weight="bold" font-family="monospace" text-anchor="middle">EARTH BUSBAR (GROUND)</text>
+
+            <!-- Wiring Paths -->
+            <line x1="128" y1="30" x2="128" y2="120" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+            <line x1="248" y1="30" x2="248" y2="120" stroke="#ef4444" stroke-width="4" stroke-linecap="round" />
+            <line x1="178" y1="30" x2="178" y2="120" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+            <line x1="298" y1="30" x2="298" y2="120" stroke="#000000" stroke-width="4" stroke-linecap="round" />
+
+            <path d="M 128 240 L 128 270 L 520 270 L 520 250" fill="none" stroke="#ef4444" stroke-width="3" />
+            <path d="M 178 240 L 178 285 L 590 285 L 590 250" fill="none" stroke="#000000" stroke-width="3" />
+            <line x1="400" y1="245" x2="400" y2="310" stroke="#10b981" stroke-width="4" />
+          </svg>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <h5 class="font-bold text-white mb-1" data-i18n="comp_fuses">فیوزی سۆلار (DC Fuses)</h5>
+            <p class="text-[11px] text-slate-400" data-i18n="comp_fuses_desc">1000V DC / 15A–20A gPV لەسەر هەردوو جەمسەری (+) و (-).</p>
+          </div>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <h5 class="font-bold text-white mb-1" data-i18n="comp_spd">پارێزەری بروسکە (DC SPD)</h5>
+            <p class="text-[11px] text-slate-400" data-i18n="comp_spd_desc">Type II / 1000V DC بۆ دەرکردنی زەبری ڤۆڵتیەی بەرز بەرەو ئەرز.</p>
+          </div>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <h5 class="font-bold text-white mb-1" data-i18n="comp_isolator">سویچی دابڕ (DC Isolator)</h5>
+            <p class="text-[11px] text-slate-400" data-i18n="comp_isolator_desc">Rotary 32A / 1000V DC چوار جەمسەری بۆ کوژاندنەوەی دەستی لە کاتی چاککردنەوە.</p>
+          </div>
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <h5 class="font-bold text-white mb-1" data-i18n="comp_box">سندوق و گلاند (IP65 Box)</h5>
+            <p class="text-[11px] text-slate-400" data-i18n="comp_box_desc">پۆلیکاربۆناتی دژە-خۆر و ئاو بە گلاندی PG لەگەڵ تەرمیناڵی برۆنزی کێبڵی ئەرز.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= 5. FULL-SCREEN PROPOSAL & PDF REPORT MODAL ================= -->
+  <div id="report-modal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md overflow-y-auto hidden p-4 sm:p-6">
+    <div id="report-modal-content" class="max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-slate-200 space-y-6">
+      
+      <!-- Report Header -->
+      <div class="report-print-head flex flex-col sm:flex-row justify-between sm:items-center gap-4 pb-4 border-b border-slate-800">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-amber-300">
+              Hawdang Mustafa
+            </h1>
+            <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-sky-950 text-sky-400 border border-sky-800">ENGINEERING PROPOSAL</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Solar PV Structural CAD, Household Load & Financial Feasibility Report</p>
+        </div>
+        <div class="text-left font-mono text-xs text-slate-400 space-y-0.5">
+          <p>Region: Kurdistan / Iraq</p>
+          <p id="rep-date">Date: 2026</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons (Hidden when printing) -->
+      <div class="no-print flex flex-wrap items-center justify-between gap-3 bg-slate-950 p-3 rounded-2xl border border-slate-800">
+        <span class="text-xs text-slate-400 font-medium">دەتوانیت ڕاستەوخۆ چاپ بکەیت یان فایلی ڕاپۆرت دابەزێنیت:</span>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl shadow transition">
+            🖨️ چاپکردن / Save as PDF
+          </button>
+          <button onclick="downloadReportHTML()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-3.5 py-2 rounded-xl border border-slate-700 transition">
+            💾 داگرتنی ڕاپۆرت
+          </button>
+          <button onclick="closeReportModal()" class="text-slate-400 hover:text-white px-3 py-2 text-xs font-bold">
+            داخستن ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Executive Specs Summary Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[11px]">توانای سیستەم (DC Capacity):</span>
+          <span id="rep-dc-kwp" class="text-base font-bold font-mono text-sky-400">4.68 kWp</span>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[11px]">شێوازی ستراکتۆر (Archetype):</span>
+          <span id="rep-shape" class="text-base font-bold text-amber-400">A-Frame Truss</span>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[11px]">بەرهەمی ساڵانە (Annual Output):</span>
+          <span id="rep-annual-kwh" class="text-base font-bold font-mono text-emerald-400">7,650 kWh</span>
+        </div>
+        <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block text-[11px]">گەڕانەوەی پارە (Payback):</span>
+          <span id="rep-payback" class="text-base font-bold font-mono text-purple-400">~ 2.8 ساڵ</span>
+        </div>
+      </div>
+
+      <!-- Structural Specs -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+        <h4 class="text-xs font-bold text-sky-400">📐 ئەندازیاری ستراکتۆر و پێوانەی شیپ و پایەکان:</h4>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+          <p class="text-slate-400">پایەی پێشەوە (h1): <strong id="rep-front-h" class="text-white">0.45 m</strong></p>
+          <p class="text-slate-400">پایەی دواوە (h2): <strong id="rep-back-h" class="text-white">2.60 m</strong></p>
+          <p class="text-slate-400">درێژی شیپ (Slope): <strong id="rep-slope-l" class="text-white">4.58 m</strong></p>
+          <p class="text-slate-400">گۆشەی لاری (Tilt): <strong id="rep-tilt" class="text-amber-400">28°</strong></p>
+        </div>
+      </div>
+
+      <!-- Financial Savings Breakdown -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+        <h4 class="text-xs font-bold text-amber-400">💰 خشتەی پاشەکەوت و داهاتی ساڵانە (پڕۆژەی ڕووناکی و مۆلیدە):</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+          <p class="text-slate-400">پاشەکەوتی پڕۆژەی ڕووناکی: <strong id="rep-runaki-sav" class="text-white">550,800 دینار</strong></p>
+          <p class="text-slate-400">پاشەکەوتی مۆلیدەی گەڕەک: <strong id="rep-gen-sav" class="text-white">1,920,000 دینار</strong></p>
+          <p class="text-slate-400">کۆی گشتی پاشەکەوتی ساڵانە: <strong id="rep-tot-sav" class="text-emerald-400 font-bold">~ 2,470,800 دینار</strong></p>
+        </div>
+      </div>
+
+      <!-- Battery and Load Audit Summary -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+        <h4 class="text-xs font-bold text-emerald-400">🔋 بارگرانی ماڵ و حەجمی پاتری:</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+          <p class="text-slate-400">لۆدی لەحزەیی (Peak): <strong id="rep-load-peak" class="text-white">3,420 W (~15.5A)</strong></p>
+          <p class="text-slate-400">پاتری هەڵبژێردراو: <strong id="rep-bat-size" class="text-white">15 kWh LiFePO4</strong></p>
+          <p class="text-slate-400">کاتی ڕاگرتن بە لۆدی هەنووکەیی: <strong id="rep-bat-runtime" class="text-emerald-400">~ 3.9 کاتژمێر</strong></p>
+        </div>
+      </div>
+
+      <!-- BOM Table for Proposal -->
+      <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <h4 class="text-xs font-bold text-white">📋 خشتەی کەرەستە سەرەکییەکان (Bill of Materials Takeoff):</h4>
+        <div class="overflow-x-auto text-xs">
+          <table class="w-full text-right border-collapse">
+            <thead>
+              <tr class="text-slate-400 border-b border-slate-800 text-[11px]">
+                <th class="py-1.5">کەرەستە</th>
+                <th class="py-1.5">قیاس / تایبەتمەندی</th>
+                <th class="py-1.5 text-center">ژمارە</th>
+                <th class="py-1.5 text-left font-mono">کێش</th>
+              </tr>
+            </thead>
+            <tbody id="rep-bom-tbody" class="divide-y divide-slate-800/60 font-mono text-slate-300">
+              <!-- Cloned from active BOM -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="text-[11px] text-slate-500 text-center pt-2 border-t border-slate-800">
+        ئامادەکراوە لەلایەن تیم و سەکۆی ئەندازیاری Hawdang Mustafa &copy; 2026. هەموو مافەکان پارێزراون.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 6. FOOTER ================= -->
+  <footer class="border-t border-slate-800/80 bg-slate-900/60 text-center py-4 text-xs text-slate-500 no-print">
+    <p>Hawdang Mustafa | Solar Structural CAD, Electrical & Energy Suite &copy; 2026</p>
+  </footer>
+
+  <!-- ================= 7. JAVASCRIPT ================= -->
+  <script>
+    const I18N = {
+      ku: {
+        app_tagline: "ستراکتۆری ئەندازیاری، بارگرانی ماڵ، حەجمی پاتری و داهاتی دارایی",
+        btn_print_proposal: "ڕاپۆرتی PDF / چاپ",
+        tab_cad: "ئەندازیاری و 3D",
+        tab_ar: "وێنەی سەربان (AR)",
+        tab_load: "لۆدی ماڵ و پاتری",
+        tab_roi: "داهات و پاشەکەوت",
+        tab_energy: "سیمولەیتەری ٤ وەرز",
+        tab_electrical: "کارەبا و کێبڵ",
+        tab_combiner: "کۆمباینەر بۆکس",
+        ar_title: "دیتنی ستراکتۆر لەسەر وێنەی سەربان (AR Roof Perspective)",
+        ar_desc: "ستراکتۆر و پەنالە هەڵبژێردراوەکان ڕاستەوخۆ دەخرێنە سەر وێنەی سەربانی واقیعی بە کۆنتڕۆڵی قەبارە و شوێن.",
+        ar_btn_upload: "بارکردنی وێنەی سەربان",
+        ar_btn_reset: "ڕێکخستنەوە",
+        ar_preset_label: "سەربانی نموونەیی هەڵبژێرە:",
+        ar_preset_concrete: "کۆنکرێت",
+        ar_preset_sandwich: "سەندویچ",
+        ar_preset_villa: "تەراس/حەوشە",
+        ar_scale: "قەبارە و زووم (Scale):",
+        ar_pos_y: "شوێن بە بەرزی (Y Position):",
+        ar_rot: "گۆشەی ئاراستە (Rotation):",
+        ar_tip_title: "💡 ئامۆژگاری بۆ دەرچوونی وێنە:",
+        ar_tip_desc: "دەتوانیت وێنەی ڕاستەقینەی سەربانی کڕیار باربکەیت و بە کۆنتڕۆڵەکان ستراکتۆرەکە ڕێک لەسەر ڕووی سەربانەکە دابنێیت تا موشتەری پێش جێبەجێکردن دیمەنە تەواوەکەی ببینێت.",
+        structure_config: "پێوانە و جۆری ستراکتۆر",
+        frame_type_label: "شێوازی ستراکتۆر هەڵبژێرە:",
+        shape_a_frame: "A-Frame قاعیدە",
+        shape_sandwich: "سەندویچ پەناڵ",
+        shape_canopy: "کەپری بەرز (Pergola)",
+        shape_monopole: "مۆنۆپۆڵ (T-Pole)",
+        shape_carport: "کارپۆرت (Carport)",
+        tiers_label: "تەبەقە لەسەر یەک بە درێژایی شیپ (Tiers):",
+        panel_count: "ژمارەی پەنال:",
+        panel_watt: "واتی پەنال:",
+        tilt_angle: "پلەی لاری (Tilt):",
+        front_leg_label: "بەرزی پایەی پێشەوە (h1):",
+        compass_title: "ئاراستەی باشووری تەواو (True South 180°):",
+        compass_desc: "پەنالەکان بە تەواوی ئاراستەی باشووری جوگرافی دەکرێن بەبێ لادان بۆ بەدەستهێنانی بەرزترین بەرهەمی کارەبا.",
+        dim_front: "پایەی پێشەوە (h1):",
+        dim_back: "پایەی دواوە (h2):",
+        dim_slope: "درێژی شیپ (Slope):",
+        dim_base: "پانی بنکە (Run):",
+        vis_title: "دیتنی ڕاستەوخۆی ستراکتۆر (Live 360° Visualizer)",
+        bom_title: "خشتەی کەرەستە و کێشی ئاسن (Bill of Materials):",
+        bom_col_item: "کەرەستە",
+        bom_col_spec: "قیاس / تایبەتمەندی",
+        bom_col_qty: "ژمارە",
+        bom_col_weight: "کێش",
+        load_title: "هەژمارکردنی بارگرانی ماڵ و حەجمی پاتری (Load & Battery Autonomy)",
+        load_desc: "لیستی ئامێرەکانی ماڵ بە وات و ئەمپێر، و هەژمارکردنی کاتژمێری ئیشکردنی پاتری (وەک ١٥ کەی-دەبلیو-ئێچ بۆ چەند ئەمپێر و چەند کاتژمێر).",
+        btn_reset_appliances: "گەڕانەوە بۆ پێشوەختە",
+        btn_add_appliance: "زیادکردنی ئامێر",
+        total_peak_power: "کۆی بەکارهێنانی لەحزەیی (Peak Load):",
+        daily_energy_consumption: "کۆی وزەی ڕۆژانەی ماڵەکە:",
+        daily_energy_sub: "لەبەرچاوگرتنی کاتژمێری ئیشکردن",
+        battery_runtime_display: "ماوەی ڕاگرتنی پاتری بە لۆدی هەنووکەیی:",
+        battery_size_title: "حەجم و توانای پاتری (LiFePO4 48V / High-Voltage):",
+        battery_size_sub: "حەجمی پاتری هەڵبژێرە تا بزانیت بۆ لۆدی ماڵەکەت و ئەمپێری جیاواز چەند کاتژمێر دەمێنێتەوە.",
+        custom_kwh_input: "حەجمی دیاریکراو (kWh):",
+        amps_hours_matrix_title: "خشتەی بەراوردی کاتژمێری مانەوەی پاتری بەپێی کێشانی ئەمپێری جیاواز (220V):",
+        appliances_table_title: "لیستی ئامێرەکانی ناو ماڵ و واتی کارکردن:",
+        appliances_table_note: "دەتوانیت ژمارە، وات، و کاتژمێری ئیشکردن دەستکاری بکەیت",
+        col_appliance_name: "ناوی ئامێر",
+        col_appliance_qty: "ژمارە",
+        col_appliance_watts: "وات (Watt)",
+        col_appliance_amps: "ئەمپێر (220V)",
+        col_appliance_hours: "کاتژمێر / ڕۆژ",
+        col_appliance_daily_kwh: "وزەی ڕۆژانە",
+        col_appliance_action: "سڕینەوە",
+        roi_title: "حیساباتی دارایی، داهات و گەڕانەوەی پارەی سەرمایە",
+        roi_desc: "هەژمارکردنی پاشەکەوتی مانگانە و ساڵانەی پسوولەی پڕۆژەی ڕووناکی و پارەی مۆلیدەی گەڕەک لەگەڵ کاتی گەڕانەوەی سەرمایە.",
+        payback_duration_label: "ماوەی گەڕانەوەی سەرمایە (Payback):",
+        investment_card: "خەرجی دانانی سیستەمەکە",
+        cost_usd: "کۆی خەرجی سیستەمەکە ($ دۆلار):",
+        exchange_rate: "نرخی ١٠٠ دۆلار (دینار):",
+        runaki_card: "کارەبای نیشتمانی / پڕۆژەی ڕووناکی",
+        runaki_type: "جۆری بەشداربووی ڕووناکی:",
+        opt_residential: "ماڵان - تاریفەی ئاسایی (72 IQD / kWh)",
+        opt_high_res: "ماڵان - قۆناغی دووەم (115 IQD / kWh)",
+        opt_commercial: "بازرگانی و دوکان (130 IQD / kWh)",
+        opt_industrial: "پیشەسازی و کارگە (160 IQD / kWh)",
+        monthly_consumption_label: "بڕی بەکارهێنانی مانگانە (kWh):",
+        bill_comparison_title: "بەراوردی پسوولەی ڕووناکی پێش و پاش سۆلار:",
+        old_bill_label: "پسوولەی پێش سۆلار:",
+        new_bill_label: "پسوولەی دوای سۆلار:",
+        solar_coverage_label: "ڕێژەی دابینکردن بە سۆلار:",
+        runaki_annual_saving: "پاشەکەوتی ساڵانەی ڕووناکی:",
+        gen_annual_saving: "پاشەکەوتی ساڵانەی مۆلیدە:",
+        total_monthly_saving: "کۆی پاشەکەوتی مانگانە:",
+        total_annual_saving: "کۆی پاشەکەوتی ساڵانە:",
+        energy_title: "سیمولەیتەری بەرهەمی کارەبا بۆ هەر ٤ وەرز و ١٢ مانگ",
+        energy_desc: "تایبەت بە هەولێر و هەرێمی کوردستان بە پێوانەی تیشکی خۆر (PSH) و لێدەرکردنی گەرمای هاوین (-0.35%/°C).",
+        annual_total_kwh: "کۆی ساڵانە:",
+        daily_avg_label: "تێکڕای ڕۆژانە:",
+        season_winter: "زستان",
+        season_spring: "بەهار",
+        season_summer: "هاوین",
+        season_autumn: "پایز",
+        day_label: "ڕۆژێک:",
+        month_label: "مانگێک:",
+        season_tot_label: "کۆی وەرز:",
+        twelve_months_title: "بەرهەمی کارەبا بە جیا بۆ هەموو ١٢ مانگەکە:",
+        col_month: "مانگ",
+        col_season: "وەرز",
+        col_psh: "تیشک (PSH)",
+        col_day_kwh: "ڕۆژانە",
+        col_month_kwh: "کۆی مانگ",
+        col_battery_ah: "پاتری (48V)",
+        elec_title: "ئەندازیاری کارەبا، ئینڤێرتەر و کێبڵەکان",
+        elec_desc: "حیسابکردنی قەبارەی ئینڤێرتەر، ڤۆڵتیەی سترینگ ($V_{oc}$)، ئەستووری وایەر (DC Drop) و مەودای سێبەری زستان.",
+        rec_inverter_label: "ئینڤێرتەری پێشنیارکراو:",
+        inverter_sizing_title: "دیاریکردنی ئینڤێرتەر (Inverter Sizing)",
+        dc_array_power: "توانای پەنالەکان (DC):",
+        dc_ac_ratio: "ڕێژەی ستاندارد (DC/AC):",
+        mppt_range: "مەودای ڤۆڵتیەی MPPT:",
+        inverter_type_desc: "جۆری پێشنیارکراو:",
+        string_sizing_title: "بەستنەوەی سترینگ (String Architecture)",
+        string_config: "پێکهاتەی زنجیرە:",
+        string_vmp: "ڤۆڵتیەی کارکردن (Vmp):",
+        string_voc: "زۆرترین ڤۆڵتیەی کراوە (Voc):",
+        string_isc: "تەوژمی ئەوپەڕ (Isc):",
+        cable_breaker_title: "وایەر و جۆزەی پاراستن (DC Sizing)",
+        cable_length_label: "مەودای وایەر لە سەربان تا ئینڤێرتەر (مەتر):",
+        cable_rec: "قیاسی وایەری سۆلار:",
+        voltage_drop: "فڕینی ڤۆڵتیە (Voltage Drop):",
+        dc_breaker: "جۆزەی پاراستن:",
+        combiner_title: "هێڵکاری ئەندازیاری کۆمباینەر بۆکس (DC Combiner Box Schematic)",
+        combiner_desc: "سندوقی پیشەسازی دژە-ئاو (IP65) بە ڕەیڵی DIN، فیوزی سۆلار، پارێزەری بروسکە SPD و سویچی سەرەکی بە کێبڵی ڕەنگاوڕەنگ.",
+        comp_fuses: "فیوزی سۆلار (DC Fuses)",
+        comp_fuses_desc: "1000V DC / 15A–20A gPV لەسەر هەردوو جەمسەری (+) و (-).",
+        comp_spd: "پارێزەری بروسکە (DC SPD)",
+        comp_spd_desc: "Type II / 1000V DC بۆ دەرکردنی زەبری ڤۆڵتیەی بەرز بەرەو ئەرز.",
+        comp_isolator: "سویچی دابڕ (DC Isolator)",
+        comp_isolator_desc: "Rotary 32A / 1000V DC چوار جەمسەری بۆ کوژاندنەوەی دەستی لە کاتی چاککردنەوە.",
+        comp_box: "سندوق و گلاند (IP65 Box)",
+        comp_box_desc: "پۆلیکاربۆناتی دژە-خۆر و ئاو بە گلاندی PG لەگەڵ تەرمیناڵی برۆنزی کێبڵی ئەرز."
+      },
+      ar: {
+        app_tagline: "هندسة الهياكل، أحمال المنزل، سعة البطارية والعائد المالي",
+        btn_print_proposal: "تقرير PDF / طباعة",
+        tab_cad: "الهندسة والمجسم",
+        tab_ar: "صورة السطح (AR)",
+        tab_load: "أحمال المنزل والبطارية",
+        tab_roi: "العائد المالي والوفر",
+        tab_energy: "محاكي الفصول الأربعة",
+        tab_electrical: "الكهرباء والكابلات",
+        tab_combiner: "صندوق التجميع",
+        ar_title: "معاينة الهيكل فوق سطح المنزل (AR Roof Perspective)",
+        ar_desc: "إسقاط الهيكل المختار والألواح مباشرة فوق صورة السطح الحقيقية مع التحكم الكامل بالمقاس والموقع.",
+        ar_btn_upload: "تحميل صورة السطح",
+        ar_btn_reset: "إعادة ضبط",
+        ar_preset_label: "اختر سطحاً نموذجياً:",
+        ar_preset_concrete: "كونكريت مسطح",
+        ar_preset_sandwich: "ساندوتش بانل",
+        ar_preset_villa: "تيراس / حديقة",
+        ar_scale: "المقاس والزووم (Scale):",
+        ar_pos_y: "الموقع العمودي (Y Position):",
+        ar_rot: "زاوية الدوران (Rotation):",
+        ar_tip_title: "💡 نصيحة لتحقيق أفضل نتيجة:",
+        ar_tip_desc: "يمكنك التقاط صورة سطح العميل الحقيقية وتحميلها وضبط الهيكل ليتطابق مع السطح بالكامل لعرضه على العميل قبل التركيب.",
+        structure_config: "أبعاد ونوع الهيكل",
+        frame_type_label: "اختر نوع وتصميم الهيكل:",
+        shape_a_frame: "قاعدة A-Frame",
+        shape_sandwich: "ساندوتش بانل",
+        shape_canopy: "مظلة برغولا مرتفعة",
+        shape_monopole: "عمود مفرد (T-Pole)",
+        shape_carport: "مظلة سيارات (Carport)",
+        tiers_label: "الطبقات فوق بعضها على الميل (Tiers):",
+        panel_count: "عدد الألواح:",
+        panel_watt: "قدرة اللوح:",
+        tilt_angle: "زاوية الميل (Tilt):",
+        front_leg_label: "ارتفاع القائم الأمامي (h1):",
+        compass_title: "اتجاه الجنوب الحقيقي (True South 180°):",
+        compass_desc: "توجيه الألواح كلياً نحو الجنوب الجغرافي دون انحراف لتحقيق أعلى إنتاجية طاقة.",
+        dim_front: "القائم الأمامي (h1):",
+        dim_back: "القائم الخلفي (h2):",
+        dim_slope: "طول الميل (Slope):",
+        dim_base: "عرض القاعدة (Run):",
+        vis_title: "المعاينة الحية للهيكل (Live 360° Visualizer)",
+        bom_title: "جدول الكميات والمواد الحديدية (BOM):",
+        bom_col_item: "المادة",
+        bom_col_spec: "المواصفة والقياس",
+        bom_col_qty: "العدد",
+        bom_col_weight: "الوزن",
+        load_title: "حاسبة أحمال المنزل وسعة البطارية وساعات التشغيل (Load & Battery)",
+        load_desc: "قائمة أجهزة المنزل بالواط والأمبير، وحساب ساعات تشغيل البطارية (مثلاً 15 كيلوواط ساعي كم ساعة تشغل ولكم أمبير).",
+        btn_reset_appliances: "استعادة الافتراضي",
+        btn_add_appliance: "إضافة جهاز",
+        total_peak_power: "إجمالي الحمل اللحظي (Peak Load):",
+        daily_energy_consumption: "إجمالي الاستهلاك اليومي للمنزل:",
+        daily_energy_sub: "باحتساب ساعات التشغيل اليومية",
+        battery_runtime_display: "مدة تشغيل البطارية للحمل الحالي:",
+        battery_size_title: "سعة وحجم البطارية (LiFePO4 48V / High-Voltage):",
+        battery_size_sub: "اختر سعة البطارية لمعرفة كم ساعة تصمد لحمل منزلك ولمختلف سحوبات الأمبير.",
+        custom_kwh_input: "سعة مخصصة (kWh):",
+        amps_hours_matrix_title: "مصفوفة مقارنة ساعات تشغيل البطارية عند سحب أمبيرات مختلفة (220V):",
+        appliances_table_title: "جدول أجهزة المنزل وقدراتها:",
+        appliances_table_note: "يمكنك تعديل العدد، الواط، وساعات التشغيل لكل جهاز",
+        col_appliance_name: "اسم الجهاز",
+        col_appliance_qty: "العدد",
+        col_appliance_watts: "الواط (Watt)",
+        col_appliance_amps: "أمبير (220V)",
+        col_appliance_hours: "ساعات / يوم",
+        col_appliance_daily_kwh: "الطاقة اليومية",
+        col_appliance_action: "حذف",
+        roi_title: "حسابات العائد المالي، الوفر وفترة الاسترداد",
+        roi_desc: "حساب الوفر الشهري والسنوي من فاتورة مشروع رونكي واشتراك مولدة الحي وفترة استرداد رأس المال بدقة.",
+        payback_duration_label: "فترة استرداد رأس المال (Payback):",
+        investment_card: "تكلفة وتأسيس المنظومة",
+        cost_usd: "إجمالي تكلفة المنظومة ($ دولار):",
+        exchange_rate: "سعر صرف 100 دولار (دينار):",
+        runaki_card: "الكهرباء الوطنية / مشروع رونكي",
+        runaki_type: "نوع اشتراك رونكي:",
+        opt_residential: "سكني - الشريحة الأولى (72 د.ع / ك.و.س)",
+        opt_high_res: "سكني - الشريحة الثانية (115 د.ع / ك.و.س)",
+        opt_commercial: "تجاري ومتاجر (130 د.ع / ك.و.س)",
+        opt_industrial: "صناعي ومعامل (160 د.ع / ك.و.س)",
+        monthly_consumption_label: "الاستهلاك الشهري للكهرباء (ك.و.س):",
+        bill_comparison_title: "مقارنة فاتورة رونكي قبل وبعد الطاقة الشمسية:",
+        old_bill_label: "الفاتورة السابقة:",
+        new_bill_label: "الفاتورة بعد الطاقة الشمسية:",
+        solar_coverage_label: "نسبة تغطية الطاقة الشمسية:",
+        runaki_annual_saving: "الوفر السنوي من رونكي:",
+        gen_annual_saving: "الوفر السنوي من المولدة:",
+        total_monthly_saving: "إجمالي الوفر الشهري:",
+        total_annual_saving: "إجمالي الوفر السنوي:",
+        energy_title: "محاكي إنتاج الطاقة للفصول الأربعة و12 شهراً",
+        energy_desc: "معاير لمناخ أربيل وكردستان والعراق مع خصم فواقد حرارة الصيف الشديدة (-0.35%/°C).",
+        annual_total_kwh: "المجموع السنوي:",
+        daily_avg_label: "المعدل اليومي:",
+        season_winter: "الشتاء",
+        season_spring: "الربيع",
+        season_summer: "الصيف",
+        season_autumn: "الخريف",
+        day_label: "يومياً:",
+        month_label: "شهرياً:",
+        season_tot_label: "مجموع الفصل:",
+        twelve_months_title: "تفصيل الإنتاج لكل شهر من أشهر السنة:",
+        col_month: "الشهر",
+        col_season: "الفصل",
+        col_psh: "ساعات الذروة (PSH)",
+        col_day_kwh: "اليومي",
+        col_month_kwh: "الشهري",
+        col_battery_ah: "البطارية (48V)",
+        elec_title: "الهندسة الكهربائية والإنفرتر والكابلات",
+        elec_desc: "حساب سعة الإنفرتر، جهد السلاسل ($V_{oc}$)، مقطع الكابل وفواقد الجهد، ومسافة الظلال الشتوية.",
+        rec_inverter_label: "الإنفرتر الموصى به:",
+        inverter_sizing_title: "تحديد سعة الإنفرتر (Inverter Sizing)",
+        dc_array_power: "قدرة الألواح (DC):",
+        dc_ac_ratio: "النسبة القياسية (DC/AC):",
+        mppt_range: "نطاق جهد MPPT:",
+        inverter_type_desc: "النوع المقترح:",
+        string_sizing_title: "توصيل السلاسل (String Architecture)",
+        string_config: "توزيع السلسلة:",
+        string_vmp: "جهد التشغيل (Vmp):",
+        string_voc: "أقصى جهد دائرة مفتوحة (Voc):",
+        string_isc: "تيار القصر (Isc):",
+        cable_breaker_title: "الكابلات وقواطع الحماية (DC Sizing)",
+        cable_length_label: "مسافة الكابل من السطح للإنفرتر (متر):",
+        cable_rec: "مقطع كابل الطاقة الشمسية:",
+        voltage_drop: "هبوط الجهد (Voltage Drop):",
+        dc_breaker: "قاطع الحماية DC:",
+        combiner_title: "هيكل مخطط صندوق التجميع (DC Combiner Box Schematic)",
+        combiner_desc: "صندوق صناعي مقاوم للماء والغبار (IP65) بسكة DIN، فيوزات DC، مانع صواعق SPD وقاطع رئيسي.",
+        comp_fuses: "فيوزات الطاقة الشمسية (DC Fuses)",
+        comp_fuses_desc: "1000V DC / 15A–20A gPV على كلا القطبين الموجب والسالب لحماية السلاسل من تماس القصر.",
+        comp_spd: "مانع الصواعق (DC SPD)",
+        comp_spd_desc: "Type II / 1000V DC لتفريغ الصواعق والجهد العالي الزائد مباشرة نحو التأريض.",
+        comp_isolator: "قاطع العزل الرئيسي (DC Isolator)",
+        comp_isolator_desc: "Rotary 32A / 1000V DC لفصل التيار المستمر بأمان تام أثناء الصيانة.",
+        comp_box: "الصندوق والجلاندات (IP65 Box)",
+        comp_box_desc: "بولي كربونات مقاوم للأشعة فوق البنفسجية مع مسطرة تأريض نحاسية."
+      },
+      en: {
+        app_tagline: "Solar Structural CAD, Household Load, Battery Sizing & Financial ROI",
+        btn_print_proposal: "Print Proposal / PDF",
+        tab_cad: "Engineering & 3D",
+        tab_ar: "Roof AR View",
+        tab_load: "Home Load & Battery",
+        tab_roi: "Financial ROI & Savings",
+        tab_energy: "4-Season Simulator",
+        tab_electrical: "Electrical & Cable",
+        tab_combiner: "Combiner Box",
+        ar_title: "Augmented Roof Simulation (AR Roof Perspective)",
+        ar_desc: "Overlay selected solar mounting frame and panels directly onto rooftop imagery with scale and position alignment.",
+        ar_btn_upload: "Upload Roof Photo",
+        ar_btn_reset: "Reset View",
+        ar_preset_label: "Choose Sample Rooftop:",
+        ar_preset_concrete: "Flat Concrete",
+        ar_preset_sandwich: "Sandwich Panel",
+        ar_preset_villa: "Villa Terrace",
+        ar_scale: "Scale & Zoom:",
+        ar_pos_y: "Vertical Offset (Y):",
+        ar_rot: "Azimuth Rotation:",
+        ar_tip_title: "💡 Professional Tip:",
+        ar_tip_desc: "Upload a real customer roof photo taken from an angle, adjust sliders to align the frame on the roof deck, and export to proposal.",
+        structure_config: "Structure & Frame Dimensions",
+        frame_type_label: "Select Frame Archetype:",
+        shape_a_frame: "Standard A-Frame",
+        shape_sandwich: "Sandwich Panel (Mini-Rail)",
+        shape_canopy: "Elevated Canopy / Pergola",
+        shape_monopole: "Cantilever Monopole (T-Pole)",
+        shape_carport: "Carport Shelter",
+        tiers_label: "Module Tiers Stacked on Slope:",
+        panel_count: "Total Modules:",
+        panel_watt: "Module Watts:",
+        tilt_angle: "Tilt Angle (Tilt):",
+        front_leg_label: "Front Post Height (h1):",
+        compass_title: "True South 180° Orientation:",
+        compass_desc: "Modules strictly oriented to True Geographic South (180° Azimuth) for maximum annual kWh generation.",
+        dim_front: "Front Leg (h1):",
+        dim_back: "Rear Leg (h2):",
+        dim_slope: "Slope Length:",
+        dim_base: "Base Footprint:",
+        vis_title: "Live 360° Visualizer",
+        bom_title: "Bill of Materials & Steel Takeoff (BOM):",
+        bom_col_item: "Item",
+        bom_col_spec: "Profile & Dimensions",
+        bom_col_qty: "Qty",
+        bom_col_weight: "Weight",
+        load_title: "Home Appliance Load & Battery Autonomy Calculator",
+        load_desc: "Full home appliance audit in Watts & Amps with realistic battery runtime sizing (e.g. 15 kWh vs hours & amp draw).",
+        btn_reset_appliances: "Reset Presets",
+        btn_add_appliance: "Add Appliance",
+        total_peak_power: "Total Peak Running Load:",
+        daily_energy_consumption: "Total Daily Household Energy:",
+        daily_energy_sub: "Factoring appliance run hours",
+        battery_runtime_display: "Battery Backup with Current Load:",
+        battery_size_title: "Battery Capacity & Sizing (LiFePO4 Lithium):",
+        battery_size_sub: "Select battery size to see autonomy under your home load and varying continuous amp draws.",
+        custom_kwh_input: "Custom Size (kWh):",
+        amps_hours_matrix_title: "Battery Autonomy vs Continuous 220V Amp Draw Matrix:",
+        appliances_table_title: "Household Appliances Power Audit:",
+        appliances_table_note: "Adjust quantity, wattage rating, and daily operating hours",
+        col_appliance_name: "Appliance",
+        col_appliance_qty: "Qty",
+        col_appliance_watts: "Watts (W)",
+        col_appliance_amps: "Amps (220V)",
+        col_appliance_hours: "Hours / Day",
+        col_appliance_daily_kwh: "Daily Energy",
+        col_appliance_action: "Action",
+        roi_title: "Financial ROI, Savings & Payback Engine",
+        roi_desc: "Calculates utility bill savings (Runaki Project) plus neighborhood generator fee offsets to determine your exact payback period.",
+        payback_duration_label: "Payback Period:",
+        investment_card: "System Capital Investment (CAPEX)",
+        cost_usd: "Total System Cost ($ USD):",
+        exchange_rate: "Exchange Rate 100 USD (IQD):",
+        runaki_card: "National Grid / Runaki Project",
+        runaki_type: "Runaki Customer Tariff:",
+        opt_residential: "Residential Tier 1 (72 IQD / kWh)",
+        opt_high_res: "Residential Tier 2 (115 IQD / kWh)",
+        opt_commercial: "Commercial (130 IQD / kWh)",
+        opt_industrial: "Industrial & Factories (160 IQD / kWh)",
+        monthly_consumption_label: "Monthly Grid Consumption (kWh):",
+        bill_comparison_title: "Runaki Utility Bill Before vs After Solar:",
+        old_bill_label: "Pre-Solar Bill:",
+        new_bill_label: "Post-Solar Bill:",
+        solar_coverage_label: "Solar Self-Sufficiency:",
+        runaki_annual_saving: "Annual Runaki Utility Saving:",
+        gen_annual_saving: "Annual Generator Fee Saving:",
+        total_monthly_saving: "Total Monthly Savings:",
+        total_annual_saving: "Total Annual Savings:",
+        energy_title: "Granular 4-Season & 12-Month Solar Yield Engine",
+        energy_desc: "Calibrated for Erbil/Kurdistan irradiance with rigorous summer temperature derating (-0.35%/°C).",
+        annual_total_kwh: "Annual Output:",
+        daily_avg_label: "Daily Average:",
+        season_winter: "Winter",
+        season_spring: "Spring",
+        season_summer: "Summer",
+        season_autumn: "Autumn",
+        day_label: "Daily:",
+        month_label: "Monthly:",
+        season_tot_label: "Season Total:",
+        twelve_months_title: "Granular Production Table for All 12 Months:",
+        col_month: "Month",
+        col_season: "Season",
+        col_psh: "Sun (PSH)",
+        col_day_kwh: "Daily kWh",
+        col_month_kwh: "Monthly kWh",
+        col_battery_ah: "Battery Ah (48V)",
+        elec_title: "Electrical, Inverter & Cable Engineering",
+        elec_desc: "Inverter kW rating, string Voc matching, DC cable voltage drop, and winter solstice anti-shading spacing.",
+        rec_inverter_label: "Recommended Inverter:",
+        inverter_sizing_title: "Inverter Sizing & Power Factor",
+        dc_array_power: "DC Array Power:",
+        dc_ac_ratio: "DC/AC Loading Ratio:",
+        mppt_range: "MPPT Operating Range:",
+        inverter_type_desc: "Inverter Recommendation:",
+        string_sizing_title: "String Architecture & Voltage Sizing",
+        string_config: "String Layout:",
+        string_vmp: "Operating Voltage (Vmp):",
+        string_voc: "Max Open Circuit Voltage (Voc):",
+        string_isc: "Short Circuit Current (Isc):",
+        cable_breaker_title: "DC Cable & Circuit Protection",
+        cable_length_label: "Cable Route from Roof to Inverter (meters):",
+        cable_rec: "Recommended PV Cable:",
+        voltage_drop: "DC Voltage Drop:",
+        dc_breaker: "DC Circuit Breaker:",
+        combiner_title: "DC Combiner Box Engineering Schematic",
+        combiner_desc: "Weatherproof IP65 box with DIN rail, DC fuses, Type II SPD, and main rotary isolator.",
+        comp_fuses: "Solar DC Fuses",
+        comp_fuses_desc: "1000V DC / 15A–20A gPV on both (+) and (-) lines to protect strings.",
+        comp_spd: "Surge Protection Device (SPD)",
+        comp_spd_desc: "Type II / 1000V DC to safely shunt high-voltage transients to earth.",
+        comp_isolator: "Main DC Isolator Switch",
+        comp_isolator_desc: "Rotary 32A / 1000V DC 4-pole switch for manual disconnection during maintenance.",
+        comp_box: "IP65 Weatherproof Enclosure",
+        comp_box_desc: "UV-resistant polycarbonate box with PG cable glands and copper ground bar."
+      }
+    };
+
+    /* App State */
+    const app = {
+      lang: 'ku',
+      shape: 'a_frame',
+      tiers: 2,
+      panels: 8,
+      watt: 585,
+      tilt: 28,
+      frontH: 0.45,
+      backH: 2.60,
+      slopeL: 4.58,
+      baseSpan: 4.04,
+      cols: 4,
+      panelW: 1.134,
+      panelL: 2.278,
+      batteryKwh: 15,
+      rotAngle: 0.35,
+      zoomLevel: 1.0,
+      arPreset: 'concrete',
+      arScale: 1.0,
+      arPosY: 0,
+      arRot: 0.35,
+      arCustomImg: null
+    };
+
+    /* Appliances Preset */
+    const DEFAULT_APPLIANCES = [
+      { id: 1, nameKu: "سپلیت ئینڤێرتەر (2 تەن)", nameAr: "سبلت إنفرتر (2 طن)", nameEn: "Inverter Split AC (2 Ton)", watts: 1800, qty: 1, hours: 8 },
+      { id: 2, nameKu: "سپلیت ئینڤێرتەر (1.5 تەن)", nameAr: "سبلت إنفرتر (1.5 طن)", nameEn: "Inverter Split AC (1.5 Ton)", watts: 1350, qty: 1, hours: 6 },
+      { id: 3, nameKu: "سەلاجەی ماڵەوە", nameAr: "ثلاجة منزلية", nameEn: "Home Refrigerator", watts: 180, qty: 1, hours: 24 },
+      { id: 4, nameKu: "موجەمیدە (فریزەر)", nameAr: "مجمدة عمودية/أفقية", nameEn: "Deep Freezer", watts: 220, qty: 1, hours: 24 },
+      { id: 5, nameKu: "گڵۆپ و ڕووناکی LED", nameAr: "إنارة ولمبات LED", nameEn: "LED Lighting Array", watts: 15, qty: 15, hours: 7 },
+      { id: 6, nameKu: "تەلەفزیۆن و مۆدێم و ئینتەرنێت", nameAr: "تلفاز وراوتر وإنترنت", nameEn: "TV & Wi-Fi Routers", watts: 120, qty: 2, hours: 10 },
+      { id: 7, nameKu: "ماتۆڕی ئاو (Pump 1HP)", nameAr: "مضخة مياه (1 حصان)", nameEn: "Water Pump (1 HP)", watts: 750, qty: 1, hours: 1.5 },
+      { id: 8, nameKu: "غەسالەی جلشۆر", nameAr: "غسالة ملابس أوتوماتيك", nameEn: "Washing Machine", watts: 450, qty: 1, hours: 1.5 },
+      { id: 9, nameKu: "ئۆتۆی جل", nameAr: "مكواة ملابس", nameEn: "Clothes Iron", watts: 1200, qty: 1, hours: 0.5 }
+    ];
+
+    let userAppliances = JSON.parse(JSON.stringify(DEFAULT_APPLIANCES));
+
+    /* Climate Data (Erbil / Kurdistan / Iraq) */
+    const MONTHS = [
+      { ku: "کانوونی دووەم (Jan)", ar: "كانون الثاني (Jan)", en: "January (Jan)", sKu: "زستان", sAr: "الشتاء", sEn: "Winter", psh: 3.2, days: 31, loss: 0.96 },
+      { ku: "شوبات (Feb)", ar: "شباط (Feb)", en: "February (Feb)", sKu: "زستان", sAr: "الشتاء", sEn: "Winter", psh: 3.7, days: 28, loss: 0.95 },
+      { ku: "ئازار (Mar)", ar: "آذار (Mar)", en: "March (Mar)", sKu: "بەهار", sAr: "الربيع", sEn: "Spring", psh: 4.9, days: 31, loss: 0.92 },
+      { ku: "نیسان (Apr)", ar: "نيسان (Apr)", en: "April (Apr)", sKu: "بەهار", sAr: "الربيع", sEn: "Spring", psh: 5.8, days: 30, loss: 0.90 },
+      { ku: "ئایار (May)", ar: "أيار (May)", en: "May (May)", sKu: "بەهار", sAr: "الربيع", sEn: "Spring", psh: 6.7, days: 31, loss: 0.85 },
+      { ku: "حوزەیران (Jun)", ar: "حزيران (Jun)", en: "June (Jun)", sKu: "هاوین", sAr: "الصيف", sEn: "Summer", psh: 7.6, days: 30, loss: 0.79 },
+      { ku: "تەممووز (Jul)", ar: "تموز (Jul)", en: "July (Jul)", sKu: "هاوین", sAr: "الصيف", sEn: "Summer", psh: 7.4, days: 31, loss: 0.76 },
+      { ku: "ئاب (Aug)", ar: "آب (Aug)", en: "August (Aug)", sKu: "هاوین", sAr: "الصيف", sEn: "Summer", psh: 6.9, days: 31, loss: 0.77 },
+      { ku: "ئەیلوول (Sep)", ar: "أيلول (Sep)", en: "September (Sep)", sKu: "پایز", sAr: "الخريف", sEn: "Autumn", psh: 6.1, days: 30, loss: 0.83 },
+      { ku: "تشرینی یەکەم (Oct)", ar: "تشرين الأول (Oct)", en: "October (Oct)", sKu: "پایز", sAr: "الخريف", sEn: "Autumn", psh: 5.1, days: 31, loss: 0.89 },
+      { ku: "تشرینی دووەم (Nov)", ar: "تشرين الثاني (Nov)", en: "November (Nov)", sKu: "پایز", sAr: "الخريف", sEn: "Autumn", psh: 4.1, days: 30, loss: 0.93 },
+      { ku: "کانوونی یەکەم (Dec)", ar: "كانون الأول (Dec)", en: "December (Dec)", sKu: "زستان", sAr: "الشتاء", sEn: "Winter", psh: 3.1, days: 31, loss: 0.96 }
+    ];
+
+    /* Language Handler */
+    function setLanguage(lang) {
+      app.lang = lang;
+      const dict = I18N[lang];
+      document.documentElement.lang = lang;
+      document.documentElement.dir = (lang === 'en') ? 'ltr' : 'rtl';
+
+      ['ku', 'ar', 'en'].forEach(l => {
+        const btn = document.getElementById(`btn-lang-${l}`);
+        if (l === lang) {
+          btn.className = "px-2.5 py-1 text-xs font-bold rounded-lg bg-sky-500 text-slate-950";
+        } else {
+          btn.className = "px-2.5 py-1 text-xs font-bold rounded-lg text-slate-400 hover:text-white";
+        }
+      });
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) el.textContent = dict[key];
+      });
+
+      document.getElementById('app-tagline').textContent = dict.app_tagline;
+      renderAppliancesTable();
+      recalculateEngineering();
+    }
+
+    /* Tab Switcher */
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-view').forEach(t => t.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = "tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold text-slate-400 hover:text-white flex items-center justify-center gap-2 border border-transparent";
+      });
+
+      const target = document.getElementById(tabId);
+      const btn = document.getElementById(`tab-btn-${tabId.replace('tab-', '')}`);
+      if (target) target.classList.remove('hidden');
+      if (btn) {
+        btn.className = "tab-btn flex-1 min-w-[130px] py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 bg-sky-500/20 text-sky-300 border border-sky-500/40";
+      }
+
+      if (tabId === 'tab-cad') {
+        setTimeout(renderStructureVisualizer, 50);
+      } else if (tabId === 'tab-ar') {
+        setTimeout(renderArCanvas, 50);
+      }
+    }
+
+    /* Frame Types */
+    function setShape(shapeKey) {
+      app.shape = shapeKey;
+      document.querySelectorAll('.shape-opt').forEach(b => {
+        b.className = "shape-opt p-2.5 rounded-xl border border-slate-800 bg-slate-950 text-slate-400 font-medium text-center transition";
+      });
+
+      const activeBtn = document.getElementById(`shape-btn-${shapeKey}`);
+      if (activeBtn) {
+        activeBtn.className = "shape-opt p-2.5 rounded-xl border border-sky-500 bg-sky-500/20 text-sky-300 font-bold text-center transition";
+      }
+
+      // Shape-specific adjustments
+      if (shapeKey === 'sandwich') {
+        document.getElementById('in-tilt').value = 10;
+        document.getElementById('in-front-leg').value = 0.10;
+      } else if (shapeKey === 'canopy' || shapeKey === 'carport') {
+        document.getElementById('in-front-leg').value = 2.10;
+        document.getElementById('in-tilt').value = 15;
+      } else if (shapeKey === 'monopole') {
+        document.getElementById('in-front-leg').value = 0.90;
+        document.getElementById('in-tilt').value = 28;
+      } else {
+        document.getElementById('in-front-leg').value = 0.45;
+        document.getElementById('in-tilt').value = 28;
+      }
+
+      recalculateEngineering();
+    }
+
+    function setTiers(t) {
+      app.tiers = parseInt(t);
+      [1, 2, 3].forEach(v => {
+        const btn = document.getElementById(`tier-btn-${v}`);
+        if (v === app.tiers) {
+          btn.className = "tier-opt py-2 rounded-xl border border-sky-500 bg-sky-500/20 text-xs font-bold text-sky-300 transition";
+        } else {
+          btn.className = "tier-opt py-2 rounded-xl border border-slate-800 bg-slate-950 text-xs font-bold text-slate-400 transition";
+        }
+      });
+      recalculateEngineering();
+    }
+
+    /* Recalculate Structural CAD Dimensions */
+    function recalculateEngineering() {
+      app.panels = parseInt(document.getElementById('in-panels').value) || 8;
+      app.watt = parseInt(document.getElementById('in-watt').value) || 585;
+      app.tilt = parseFloat(document.getElementById('in-tilt').value) || 28;
+      app.frontH = parseFloat(document.getElementById('in-front-leg').value) || 0.45;
+
+      document.getElementById('lbl-tilt-val').textContent = `${app.tilt}°`;
+      document.getElementById('lbl-front-val').textContent = `${app.frontH.toFixed(2)} m`;
+
+      const kwp = (app.panels * app.watt) / 1000.0;
+      document.getElementById('kwp-badge').textContent = `${kwp.toFixed(2)} kWp`;
+
+      app.cols = Math.ceil(app.panels / app.tiers);
+      const rad = (app.tilt * Math.PI) / 180.0;
+      app.slopeL = app.tiers * app.panelL + 0.05 * (app.tiers - 1);
+      app.baseSpan = app.slopeL * Math.cos(rad);
+      const heightDelta = app.slopeL * Math.sin(rad);
+      app.backH = app.frontH + heightDelta;
+
+      document.getElementById('val-front-leg').textContent = `${app.frontH.toFixed(2)} m`;
+      document.getElementById('val-back-leg').textContent = `${app.backH.toFixed(2)} m`;
+      document.getElementById('val-slope-len').textContent = `${app.slopeL.toFixed(2)} m`;
+      document.getElementById('val-base-span').textContent = `${app.baseSpan.toFixed(2)} m`;
+
+      const shapeNames = {
+        a_frame: "A-Frame Truss",
+        sandwich: "Sandwich Mini-Rail",
+        canopy: "Pergola Canopy",
+        monopole: "Cantilever Monopole",
+        carport: "Carport Shelter"
+      };
+      document.getElementById('hud-shape-name').textContent = shapeNames[app.shape] || "Custom Truss";
+
+      renderStructureVisualizer();
+      renderArCanvas();
+      renderBOM();
+      calculateEnergy(kwp);
+      calculateElectrical();
+    }
+
+    /* 3D Canvas Vector Visualizer */
+    let isDraggingVisualizer = false;
+    let prevMouseX = 0;
+
+    function renderStructureVisualizer() {
+      const canvas = document.getElementById('structure-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.parentElement.clientWidth || 600;
+      const h = canvas.parentElement.clientHeight || 360;
+
+      canvas.width = w;
+      canvas.height = h;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid Backdrop
+      ctx.strokeStyle = 'rgba(30, 41, 59, 0.45)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      const cx = w / 2;
+      const cy = h / 2 + 50;
+      const scale = (w > 500 ? 55 : 40) * app.zoomLevel;
+
+      const cosA = Math.cos(app.rotAngle);
+      const sinA = Math.sin(app.rotAngle);
+
+      function project(x, y, z) {
+        const isoX = x * cosA - z * sinA;
+        const isoZ = x * sinA + z * cosA;
+        const px = cx + isoX * scale;
+        const py = cy - y * scale + isoZ * scale * 0.35;
+        return { x: px, y: py };
+      }
+
+      // Concrete Slab Deck
+      const deckW = (app.cols * 1.15) + 1.2;
+      const deckD = app.baseSpan + 1.4;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      const d1 = project(-deckW/2, 0, deckD/2);
+      const d2 = project(deckW/2, 0, deckD/2);
+      const d3 = project(deckW/2, 0, -deckD/2);
+      const d4 = project(-deckW/2, 0, -deckD/2);
+      ctx.moveTo(d1.x, d1.y); ctx.lineTo(d2.x, d2.y); ctx.lineTo(d3.x, d3.y); ctx.lineTo(d4.x, d4.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      const cols = app.cols;
+      const panelSpacingX = 1.15;
+      const startX = -((cols - 1) * panelSpacingX) / 2;
+      const baseSpan = app.baseSpan;
+      const zFront = baseSpan / 2;
+      const zRear = -baseSpan / 2;
+      const fH = app.frontH;
+      const bH = app.backH;
+
+      const numFrames = cols >= 4 ? 3 : 2;
+      const frameStep = (cols - 1) / (numFrames - 1);
+
+      // Draw Framework Archetype
+      for (let i = 0; i < numFrames; i++) {
+        const cIdx = Math.round(i * frameStep);
+        const x = startX + (cIdx * panelSpacingX);
+
+        if (app.shape === 'sandwich') {
+          // Sandwich Mini-Rail (Zero Posts)
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 4;
+          const pM1 = project(x, 0.05, zFront);
+          const pM2 = project(x, 0.05 + (bH - fH), zRear);
+          ctx.beginPath(); ctx.moveTo(pM1.x, pM1.y); ctx.lineTo(pM2.x, pM2.y); ctx.stroke();
+        } else if (app.shape === 'monopole') {
+          // Central Post + T Cantilever Rafter
+          const centerH = (fH + bH) / 2;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 8;
+          const pBase = project(x, 0, 0);
+          const pTop = project(x, centerH, 0);
+          ctx.beginPath(); ctx.moveTo(pBase.x, pBase.y); ctx.lineTo(pTop.x, pTop.y); ctx.stroke();
+
+          ctx.strokeStyle = '#f1f5f9';
+          ctx.lineWidth = 4;
+          const pFront = project(x, fH, zFront);
+          const pRear = project(x, bH, zRear);
+          ctx.beginPath(); ctx.moveTo(pFront.x, pFront.y); ctx.lineTo(pRear.x, pRear.y); ctx.stroke();
+        } else {
+          // A-Frame, Canopy, and Carport (Footing + Front Leg + Rear Leg + Rafter + Bracing)
+          ctx.fillStyle = '#64748b';
+          const pPadF = project(x, 0.08, zFront);
+          const pPadB = project(x, 0.08, zRear);
+          ctx.fillRect(pPadF.x - 8, pPadF.y - 4, 16, 8);
+          ctx.fillRect(pPadB.x - 8, pPadB.y - 4, 16, 8);
+
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = app.shape === 'canopy' || app.shape === 'carport' ? 5 : 4;
+          const pGndF = project(x, 0, zFront);
+          const pTopF = project(x, fH, zFront);
+          ctx.beginPath(); ctx.moveTo(pGndF.x, pGndF.y); ctx.lineTo(pTopF.x, pTopF.y); ctx.stroke();
+
+          const pGndB = project(x, 0, zRear);
+          const pTopB = project(x, bH, zRear);
+          ctx.beginPath(); ctx.moveTo(pGndB.x, pGndB.y); ctx.lineTo(pTopB.x, pTopB.y); ctx.stroke();
+
+          // Sloped Rafter
+          ctx.strokeStyle = '#f8fafc';
+          ctx.lineWidth = 4;
+          ctx.beginPath(); ctx.moveTo(pTopF.x, pTopF.y); ctx.lineTo(pTopB.x, pTopB.y); ctx.stroke();
+
+          // Diagonal Bracing
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.moveTo(pGndF.x, pGndF.y); ctx.lineTo(pTopB.x, pTopB.y); ctx.stroke();
+        }
+      }
+
+      // Draw PV Modules (Tiers x Columns)
+      let placed = 0;
+      for (let t = 0; t < app.tiers; t++) {
+        const fracT1 = t / app.tiers;
+        const fracT2 = (t + 1) / app.tiers;
+
+        const z1 = THREE_lerp(zFront, zRear, fracT1);
+        const y1 = THREE_lerp(fH, bH, fracT1) + 0.04;
+        const z2 = THREE_lerp(zFront, zRear, fracT2);
+        const y2 = THREE_lerp(fH, bH, fracT2) + 0.04;
+
+        for (let c = 0; c < cols; c++) {
+          if (placed >= app.panels) break;
+          const xLeft = startX + c * panelSpacingX - 0.52;
+          const xRight = startX + c * panelSpacingX + 0.52;
+
+          const p1 = project(xLeft, y1, z1);
+          const p2 = project(xRight, y1, z1);
+          const p3 = project(xRight, y2, z2);
+          const p4 = project(xLeft, y2, z2);
+
+          const pvGrad = ctx.createLinearGradient(p1.x, p1.y, p3.x, p3.y);
+          pvGrad.addColorStop(0, '#1e3a8a');
+          pvGrad.addColorStop(1, '#091e42');
+
+          ctx.fillStyle = pvGrad;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.5;
+
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.lineTo(p3.x, p3.y);
+          ctx.lineTo(p4.x, p4.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          placed++;
+        }
+      }
+    }
+
+    function orbitStructure(delta) {
+      app.rotAngle += delta;
+      renderStructureVisualizer();
+    }
+
+    function zoomStructure(delta) {
+      app.zoomLevel = Math.max(0.6, Math.min(2.0, app.zoomLevel + delta));
+      renderStructureVisualizer();
+    }
+
+    function resetStructureView() {
+      app.rotAngle = 0.35;
+      app.zoomLevel = 1.0;
+      renderStructureVisualizer();
+    }
+
+    /* AR Roof Perspective */
+    function setArPreset(presetKey) {
+      app.arPreset = presetKey;
+      app.arCustomImg = null;
+
+      document.querySelectorAll('.ar-preset-btn').forEach(b => {
+        b.className = "ar-preset-btn p-2 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-medium text-center transition";
+      });
+
+      const activeBtn = document.getElementById(`btn-ar-${presetKey}`);
+      if (activeBtn) {
+        activeBtn.className = "ar-preset-btn p-2 rounded-xl border border-sky-500 bg-sky-500/20 text-sky-300 font-bold text-center transition";
+      }
+
+      const badge = document.getElementById('ar-status-badge');
+      if (badge) {
+        if (presetKey === 'concrete') badge.textContent = "● Flat Concrete Roof Deck";
+        else if (presetKey === 'sandwich') badge.textContent = "● Sandwich Panel Industrial Deck";
+        else badge.textContent = "● Villa Terrace / Pergola Deck";
+      }
+
+      renderArCanvas();
+    }
+
+    function handleRoofUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          app.arCustomImg = img;
+          const badge = document.getElementById('ar-status-badge');
+          if (badge) badge.textContent = `● Custom Photo: ${file.name.substring(0, 16)}...`;
+          renderArCanvas();
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateArOverlay() {
+      app.arScale = parseFloat(document.getElementById('in-ar-scale').value) || 1.0;
+      app.arPosY = parseFloat(document.getElementById('in-ar-pos-y').value) || 0;
+      app.arRot = parseFloat(document.getElementById('in-ar-rot').value) || 0.35;
+
+      document.getElementById('lbl-ar-scale').textContent = `${app.arScale.toFixed(2)}x`;
+      document.getElementById('lbl-ar-pos-y').textContent = `${Math.round(app.arPosY)} px`;
+      document.getElementById('lbl-ar-rot').textContent = `${app.arRot.toFixed(2)} rad`;
+
+      renderArCanvas();
+    }
+
+    function resetArControls() {
+      app.arScale = 1.0;
+      app.arPosY = 0;
+      app.arRot = 0.35;
+
+      document.getElementById('in-ar-scale').value = 1.0;
+      document.getElementById('in-ar-pos-y').value = 0;
+      document.getElementById('in-ar-rot').value = 0.35;
+
+      document.getElementById('lbl-ar-scale').textContent = "1.0x";
+      document.getElementById('lbl-ar-pos-y').textContent = "0 px";
+      document.getElementById('lbl-ar-rot').textContent = "0.35 rad";
+
+      renderArCanvas();
+    }
+
+    function renderArCanvas() {
+      const canvas = document.getElementById('ar-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.parentElement.clientWidth || 700;
+      const h = canvas.parentElement.clientHeight || 440;
+
+      canvas.width = w;
+      canvas.height = h;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background Deck
+      if (app.arCustomImg) {
+        ctx.drawImage(app.arCustomImg, 0, 0, w, h);
+        const grad = ctx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, 'rgba(0,0,0,0.15)');
+        grad.addColorStop(1, 'rgba(0,0,0,0.45)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        drawProceduralRoof(ctx, w, h, app.arPreset);
+      }
+
+      // Structure Projection
+      const cx = w / 2;
+      const cy = (h / 2 + 50) + app.arPosY;
+      const scale = (w > 500 ? 52 : 38) * app.arScale;
+
+      const cosA = Math.cos(app.arRot);
+      const sinA = Math.sin(app.arRot);
+
+      function projectAR(x, y, z) {
+        const isoX = x * cosA - z * sinA;
+        const isoZ = x * sinA + z * cosA;
+        const px = cx + isoX * scale;
+        const py = cy - y * scale + isoZ * scale * 0.35;
+        return { x: px, y: py };
+      }
+
+      const cols = app.cols;
+      const panelSpacingX = 1.15;
+      const startX = -((cols - 1) * panelSpacingX) / 2;
+      const baseSpan = app.baseSpan;
+      const zFront = baseSpan / 2;
+      const zRear = -baseSpan / 2;
+      const fH = app.frontH;
+      const bH = app.backH;
+
+      // Drop shadow
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.beginPath();
+      const s1 = projectAR(startX - 0.7, 0, zFront + 0.3);
+      const s2 = projectAR(startX + (cols * panelSpacingX) + 0.2, 0, zFront + 0.3);
+      const s3 = projectAR(startX + (cols * panelSpacingX) + 0.2, 0, zRear - 0.4);
+      const s4 = projectAR(startX - 0.7, 0, zRear - 0.4);
+      ctx.moveTo(s1.x, s1.y); ctx.lineTo(s2.x, s2.y); ctx.lineTo(s3.x, s3.y); ctx.lineTo(s4.x, s4.y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Posts & Framework
+      const numFrames = cols >= 4 ? 3 : 2;
+      const frameStep = (cols - 1) / (numFrames - 1);
+
+      for (let i = 0; i < numFrames; i++) {
+        const cIdx = Math.round(i * frameStep);
+        const x = startX + (cIdx * panelSpacingX);
+
+        if (app.shape === 'sandwich') {
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 4 * app.arScale;
+          const pM1 = projectAR(x, 0.05, zFront);
+          const pM2 = projectAR(x, 0.05 + (bH - fH), zRear);
+          ctx.beginPath(); ctx.moveTo(pM1.x, pM1.y); ctx.lineTo(pM2.x, pM2.y); ctx.stroke();
+        } else if (app.shape === 'monopole') {
+          const centerH = (fH + bH) / 2;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 7 * app.arScale;
+          const pBase = projectAR(x, 0, 0);
+          const pTop = projectAR(x, centerH, 0);
+          ctx.beginPath(); ctx.moveTo(pBase.x, pBase.y); ctx.lineTo(pTop.x, pTop.y); ctx.stroke();
+
+          ctx.strokeStyle = '#f1f5f9';
+          ctx.lineWidth = 4 * app.arScale;
+          const pFront = projectAR(x, fH, zFront);
+          const pRear = projectAR(x, bH, zRear);
+          ctx.beginPath(); ctx.moveTo(pFront.x, pFront.y); ctx.lineTo(pRear.x, pRear.y); ctx.stroke();
+        } else {
+          ctx.fillStyle = '#64748b';
+          const pPadF = projectAR(x, 0.08, zFront);
+          const pPadB = projectAR(x, 0.08, zRear);
+          ctx.fillRect(pPadF.x - (8 * app.arScale), pPadF.y - (4 * app.arScale), 16 * app.arScale, 8 * app.arScale);
+          ctx.fillRect(pPadB.x - (8 * app.arScale), pPadB.y - (4 * app.arScale), 16 * app.arScale, 8 * app.arScale);
+
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 4.5 * app.arScale;
+          const pGndF = projectAR(x, 0, zFront);
+          const pTopF = projectAR(x, fH, zFront);
+          ctx.beginPath(); ctx.moveTo(pGndF.x, pGndF.y); ctx.lineTo(pTopF.x, pTopF.y); ctx.stroke();
+
+          const pGndB = projectAR(x, 0, zRear);
+          const pTopB = projectAR(x, bH, zRear);
+          ctx.beginPath(); ctx.moveTo(pGndB.x, pGndB.y); ctx.lineTo(pTopB.x, pTopB.y); ctx.stroke();
+
+          ctx.strokeStyle = '#f8fafc';
+          ctx.lineWidth = 4.5 * app.arScale;
+          ctx.beginPath(); ctx.moveTo(pTopF.x, pTopF.y); ctx.lineTo(pTopB.x, pTopB.y); ctx.stroke();
+        }
+      }
+
+      // Modules on AR Canvas
+      let placed = 0;
+      for (let t = 0; t < app.tiers; t++) {
+        const fracT1 = t / app.tiers;
+        const fracT2 = (t + 1) / app.tiers;
+
+        const z1 = THREE_lerp(zFront, zRear, fracT1);
+        const y1 = THREE_lerp(fH, bH, fracT1) + 0.05;
+        const z2 = THREE_lerp(zFront, zRear, fracT2);
+        const y2 = THREE_lerp(fH, bH, fracT2) + 0.05;
+
+        for (let c = 0; c < cols; c++) {
+          if (placed >= app.panels) break;
+          const xLeft = startX + c * panelSpacingX - 0.52;
+          const xRight = startX + c * panelSpacingX + 0.52;
+
+          const p1 = projectAR(xLeft, y1, z1);
+          const p2 = projectAR(xRight, y1, z1);
+          const p3 = projectAR(xRight, y2, z2);
+          const p4 = projectAR(xLeft, y2, z2);
+
+          const cellGrad = ctx.createLinearGradient(p1.x, p1.y, p3.x, p3.y);
+          cellGrad.addColorStop(0, '#1e3a8a');
+          cellGrad.addColorStop(1, '#0f172a');
+
+          ctx.fillStyle = cellGrad;
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 1.4 * app.arScale;
+
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.lineTo(p3.x, p3.y);
+          ctx.lineTo(p4.x, p4.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+
+          placed++;
+        }
+      }
+    }
+
+    function drawProceduralRoof(ctx, w, h, preset) {
+      if (preset === 'sandwich') {
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.45);
+        skyGrad.addColorStop(0, '#0284c7');
+        skyGrad.addColorStop(1, '#93c5fd');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, w, h * 0.45);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.4); ctx.lineTo(w, h * 0.35); ctx.lineTo(w, h); ctx.lineTo(0, h);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2.5;
+        for (let x = -100; x < w + 200; x += 35) {
+          ctx.beginPath();
+          ctx.moveTo(x, h * 0.38);
+          ctx.lineTo(x * 1.3 - 50, h);
+          ctx.stroke();
+        }
+      } else if (preset === 'villa') {
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.5);
+        skyGrad.addColorStop(0, '#38bdf8');
+        skyGrad.addColorStop(1, '#fde68a');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, w, h * 0.5);
+
+        ctx.fillStyle = '#b45309';
+        ctx.fillRect(0, h * 0.48, w, h * 0.52);
+
+        ctx.strokeStyle = '#92400e';
+        ctx.lineWidth = 1.5;
+        for (let y = h * 0.48; y < h; y += 28) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+        for (let x = 0; x < w; x += 55) {
+          ctx.beginPath(); ctx.moveTo(x, h * 0.48); ctx.lineTo(x, h); ctx.stroke();
+        }
+      } else {
+        const skyGrad = ctx.createLinearGradient(0, 0, 0, h * 0.42);
+        skyGrad.addColorStop(0, '#0369a1');
+        skyGrad.addColorStop(1, '#bae6fd');
+        ctx.fillStyle = skyGrad;
+        ctx.fillRect(0, 0, w, h * 0.42);
+
+        const deckGrad = ctx.createLinearGradient(0, h * 0.4, 0, h);
+        deckGrad.addColorStop(0, '#475569');
+        deckGrad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = deckGrad;
+        ctx.fillRect(0, h * 0.4, w, h * 0.6);
+
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(0, h * 0.37, w, h * 0.05);
+
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 2;
+        for (let x = -50; x < w + 100; x += 65) {
+          ctx.beginPath();
+          ctx.moveTo(x, h * 0.42);
+          ctx.lineTo(x * 1.25 - 80, h);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function THREE_lerp(start, end, amt) {
+      return (1 - amt) * start + amt * end;
+    }
+
+    /* Bill of Materials (BOM) */
+    function renderBOM() {
+      const tbody = document.getElementById('bom-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      let items = [];
+      const numTrusses = app.cols >= 4 ? 3 : 2;
+
+      if (app.shape === 'sandwich') {
+        const railsCount = app.panels * 2;
+        items = [
+          { name: "Aluminium Mini-Rails", spec: "6005-T5 (250mm) + EPDM", qty: `${railsCount} pcs`, weight: `${(railsCount * 0.45).toFixed(1)} kg` },
+          { name: "Self-Drilling Screws", spec: "Bi-metal EPDM M6.3×25", qty: `${railsCount * 4} pcs`, weight: "2.8 kg" },
+          { name: "Module Mid Clamps", spec: "Aluminium 35mm with Inox Bolt", qty: `${(app.panels - app.tiers) * 2} pcs`, weight: "3.5 kg" },
+          { name: "Module End Clamps", spec: "Aluminium 35mm with Inox Bolt", qty: `${app.tiers * 4} pcs`, weight: "2.1 kg" },
+          { name: "Concrete Ballast", spec: "Not Required (Zero Roof Load)", qty: "0", weight: "0.0 kg" }
+        ];
+      } else {
+        const postsCount = numTrusses * 2;
+        const raftersCount = numTrusses;
+        const purlinsCount = app.tiers * 2;
+
+        items = [
+          { name: "Main Structural Posts", spec: app.shape === 'canopy' || app.shape === 'carport' ? "100×100×3mm Box" : "80×80×2.5mm Tube", qty: `${postsCount} pcs`, weight: `${Math.round(postsCount * 2.2 * 6.5)} kg` },
+          { name: "Sloped Rafter Beams", spec: "Galvanized 40×80×2mm", qty: `${raftersCount} pcs`, weight: `${Math.round(raftersCount * app.slopeL * 4.5)} kg` },
+          { name: "Mounting Purlins / Rails", spec: "Aluminium Solar R52", qty: `${purlinsCount} runs`, weight: `${Math.round(purlinsCount * (app.cols * 1.15) * 2.2)} kg` },
+          { name: "Diagonal Cross Braces", spec: "Angle Iron 40×40×3mm", qty: `${numTrusses * 2} pcs`, weight: `${numTrusses * 2 * 5} kg` },
+          { name: "Concrete Ballast Blocks", spec: "Cast Concrete 40×40×25cm", qty: `${postsCount} blocks`, weight: `${postsCount * 65} kg` },
+          { name: "Anchor Bolts", spec: "Hilti M12 Expansion", qty: `${postsCount * 2} pcs`, weight: "5.4 kg" }
+        ];
+      }
+
+      items.forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2 text-white font-sans">${it.name}</td>
+          <td class="py-2 text-slate-400 font-sans">${it.spec}</td>
+          <td class="py-2 text-center text-sky-400 font-bold">${it.qty}</td>
+          <td class="py-2 text-left text-amber-400">${it.weight}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const weightVal = app.shape === 'sandwich' ? `~ 18 kg (Ultra-Light)` : `~ 185 kg`;
+      document.getElementById('total-weight-badge').textContent = weightVal;
+    }
+
+    /* Appliances Audit & Battery Matrix */
+    function renderAppliancesTable() {
+      const tbody = document.getElementById('appliances-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      let totalPeakWatts = 0;
+      let totalDailyKwh = 0;
+
+      userAppliances.forEach((item, idx) => {
+        const itemWatts = item.watts * item.qty;
+        const itemAmps = (itemWatts / 220.0).toFixed(1);
+        const itemKwh = (itemWatts * item.hours) / 1000.0;
+
+        totalPeakWatts += itemWatts;
+        totalDailyKwh += itemKwh;
+
+        const displayName = app.lang === 'ku' ? item.nameKu : (app.lang === 'ar' ? item.nameAr : item.nameEn);
+
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/60 transition";
+        tr.innerHTML = `
+          <td class="py-2.5 font-sans font-medium text-white">
+            <input type="text" value="${displayName}" class="bg-transparent border-b border-transparent focus:border-sky-500 text-xs text-white outline-none w-full" onchange="updateApplianceName(${idx}, this.value)">
+          </td>
+          <td class="py-2.5 text-center">
+            <input type="number" min="0" max="100" value="${item.qty}" class="w-14 bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-center font-bold text-white text-xs outline-none focus:border-sky-500" onchange="updateApplianceQty(${idx}, this.value)">
+          </td>
+          <td class="py-2.5 text-center">
+            <input type="number" min="1" max="10000" step="10" value="${item.watts}" class="w-20 bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-center font-bold text-sky-400 text-xs outline-none focus:border-sky-500" onchange="updateApplianceWatts(${idx}, this.value)">
+          </td>
+          <td class="py-2.5 text-center text-amber-400 font-bold">${itemAmps} A</td>
+          <td class="py-2.5 text-center">
+            <input type="number" min="0" max="24" step="0.5" value="${item.hours}" class="w-16 bg-slate-900 border border-slate-800 rounded-lg px-2 py-1 text-center font-bold text-white text-xs outline-none focus:border-sky-500" onchange="updateApplianceHours(${idx}, this.value)">
+          </td>
+          <td class="py-2.5 text-center text-emerald-400 font-bold">${itemKwh.toFixed(2)} kWh</td>
+          <td class="py-2.5 text-center no-print">
+            <button onclick="removeApplianceRow(${idx})" class="text-red-400 hover:text-red-300 font-bold px-2 py-0.5 bg-red-950/40 rounded border border-red-900/50">✕</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const totalAmps = (totalPeakWatts / 220.0).toFixed(1);
+      document.getElementById('load-sum-watts').textContent = `${totalPeakWatts.toLocaleString()} W`;
+      document.getElementById('load-sum-amps').textContent = `~ ${totalAmps} A لەسەر 220V`;
+      document.getElementById('load-sum-kwh').textContent = `${totalDailyKwh.toFixed(1)} kWh / ${app.lang === 'en' ? 'day' : 'ڕۆژ'}`;
+
+      calculateBatteryAutonomy(totalPeakWatts);
+      renderBatteryMatrix();
+    }
+
+    function updateApplianceName(idx, val) {
+      if (userAppliances[idx]) {
+        userAppliances[idx].nameKu = val;
+        userAppliances[idx].nameAr = val;
+        userAppliances[idx].nameEn = val;
+      }
+    }
+
+    function updateApplianceQty(idx, val) {
+      if (userAppliances[idx]) {
+        userAppliances[idx].qty = Math.max(0, parseInt(val) || 0);
+        renderAppliancesTable();
+      }
+    }
+
+    function updateApplianceWatts(idx, val) {
+      if (userAppliances[idx]) {
+        userAppliances[idx].watts = Math.max(0, parseInt(val) || 0);
+        renderAppliancesTable();
+      }
+    }
+
+    function updateApplianceHours(idx, val) {
+      if (userAppliances[idx]) {
+        userAppliances[idx].hours = Math.max(0, Math.min(24, parseFloat(val) || 0));
+        renderAppliancesTable();
+      }
+    }
+
+    function removeApplianceRow(idx) {
+      userAppliances.splice(idx, 1);
+      renderAppliancesTable();
+    }
+
+    function addCustomApplianceRow() {
+      userAppliances.push({
+        id: Date.now(),
+        nameKu: "ئامێری نوێ",
+        nameAr: "جهاز جديد",
+        nameEn: "New Appliance",
+        watts: 500,
+        qty: 1,
+        hours: 4
+      });
+      renderAppliancesTable();
+    }
+
+    function resetAppliancePresets() {
+      userAppliances = JSON.parse(JSON.stringify(DEFAULT_APPLIANCES));
+      renderAppliancesTable();
+    }
+
+    function setBatteryCapacity(kwh) {
+      app.batteryKwh = parseFloat(kwh);
+      document.getElementById('in-custom-battery').value = app.batteryKwh;
+
+      [5, 10, 15, 20, 30].forEach(v => {
+        const btn = document.getElementById(`btn-bat-${v}`);
+        if (!btn) return;
+        if (v === app.batteryKwh) {
+          btn.className = "bat-preset-btn py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold transition";
+        } else {
+          btn.className = "bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition";
+        }
+      });
+
+      renderAppliancesTable();
+    }
+
+    function setCustomBatteryCapacity(val) {
+      app.batteryKwh = Math.max(1, parseFloat(val) || 15);
+      [5, 10, 15, 20, 30].forEach(v => {
+        const btn = document.getElementById(`btn-bat-${v}`);
+        if (!btn) return;
+        if (v === app.batteryKwh) {
+          btn.className = "bat-preset-btn py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-emerald-300 font-bold transition";
+        } else {
+          btn.className = "bat-preset-btn py-2.5 px-3 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 font-bold transition";
+        }
+      });
+      renderAppliancesTable();
+    }
+
+    function calculateBatteryAutonomy(totalPeakWatts) {
+      const usableKwh = app.batteryKwh * 0.90 * 0.92;
+      const usableWattHours = usableKwh * 1000.0;
+
+      let runtimeHours = 0;
+      if (totalPeakWatts > 0) {
+        runtimeHours = usableWattHours / totalPeakWatts;
+      }
+
+      const displayHours = runtimeHours.toFixed(1);
+      const hourSuffix = app.lang === 'ku' ? 'کاتژمێر' : (app.lang === 'ar' ? 'ساعة' : 'hours');
+      document.getElementById('battery-runtime-hours').textContent = `~ ${displayHours} ${hourSuffix}`;
+      document.getElementById('battery-runtime-sub').textContent = `بۆ پاتری ${app.batteryKwh} kWh بە 90% DoD (LiFePO4)`;
+    }
+
+    function renderBatteryMatrix() {
+      const container = document.getElementById('battery-matrix-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      document.getElementById('matrix-active-kwh-badge').textContent = `${app.batteryKwh} kWh Battery`;
+
+      const usableWattHours = app.batteryKwh * 0.90 * 0.92 * 1000.0;
+      const testAmps = [5, 10, 15, 20, 25];
+
+      testAmps.forEach(amps => {
+        const powerDrawWatts = amps * 220;
+        const hoursDuration = (usableWattHours / powerDrawWatts).toFixed(1);
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 p-3 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition";
+        card.innerHTML = `
+          <span class="text-[11px] text-amber-400 font-bold block">${amps} A (220V)</span>
+          <span class="text-[10px] text-slate-500 block">~ ${powerDrawWatts} W</span>
+          <span class="text-base font-black text-emerald-300 block mt-1">~ ${hoursDuration} h</span>
+          <span class="text-[9px] text-slate-400 block">${app.lang === 'en' ? 'continuous' : 'بەردەوام'}</span>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* Granular Energy Simulation */
+    let cachedAnnualKwh = 7650;
+
+    function calculateEnergy(kwp) {
+      let annualKwh = 0;
+      let seasonTotals = { winter: 0, spring: 0, summer: 0, autumn: 0 };
+      const tbody = document.getElementById('months-table-body');
+      if (tbody) tbody.innerHTML = '';
+
+      MONTHS.forEach(m => {
+        const netPR = 0.83 * m.loss;
+        const dailyKwh = kwp * m.psh * netPR;
+        const monthKwh = dailyKwh * m.days;
+        annualKwh += monthKwh;
+
+        if (m.sEn === "Winter") seasonTotals.winter += monthKwh;
+        else if (m.sEn === "Spring") seasonTotals.spring += monthKwh;
+        else if (m.sEn === "Summer") seasonTotals.summer += monthKwh;
+        else if (m.sEn === "Autumn") seasonTotals.autumn += monthKwh;
+
+        const mName = app.lang === 'ku' ? m.ku : (app.lang === 'ar' ? m.ar : m.en);
+        const sName = app.lang === 'ku' ? m.sKu : (app.lang === 'ar' ? m.sAr : m.sEn);
+        const batAh = Math.round((dailyKwh * 1000) / 48);
+
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="py-2 text-white font-sans">${mName}</td>
+            <td class="py-2 text-slate-400 font-sans">${sName}</td>
+            <td class="py-2 text-center text-amber-400 font-bold">${m.psh.toFixed(1)}</td>
+            <td class="py-2 text-center text-sky-300 font-bold">${dailyKwh.toFixed(1)}</td>
+            <td class="py-2 text-center text-white font-bold">${Math.round(monthKwh)}</td>
+            <td class="py-2 text-left text-emerald-400">${batAh} Ah</td>
+          `;
+          tbody.appendChild(tr);
+        }
+      });
+
+      cachedAnnualKwh = annualKwh;
+      const dailyAvg = (annualKwh / 365.0).toFixed(1);
+      document.getElementById('stat-annual-kwh').textContent = `${Math.round(annualKwh).toLocaleString()} kWh`;
+      document.getElementById('stat-daily-kwh').textContent = `${dailyAvg} kWh`;
+
+      document.getElementById('winter-day').textContent = `${(seasonTotals.winter / 90).toFixed(1)} kWh`;
+      document.getElementById('winter-month').textContent = `${Math.round(seasonTotals.winter / 3)} kWh`;
+      document.getElementById('winter-tot').textContent = `${Math.round(seasonTotals.winter)} kWh`;
+
+      document.getElementById('spring-day').textContent = `${(seasonTotals.spring / 92).toFixed(1)} kWh`;
+      document.getElementById('spring-month').textContent = `${Math.round(seasonTotals.spring / 3)} kWh`;
+      document.getElementById('spring-tot').textContent = `${Math.round(seasonTotals.spring)} kWh`;
+
+      document.getElementById('summer-day').textContent = `${(seasonTotals.summer / 92).toFixed(1)} kWh`;
+      document.getElementById('summer-month').textContent = `${Math.round(seasonTotals.summer / 3)} kWh`;
+      document.getElementById('summer-tot').textContent = `${Math.round(seasonTotals.summer)} kWh`;
+
+      document.getElementById('autumn-day').textContent = `${(seasonTotals.autumn / 91).toFixed(1)} kWh`;
+      document.getElementById('autumn-month').textContent = `${Math.round(seasonTotals.autumn / 3)} kWh`;
+      document.getElementById('autumn-tot').textContent = `${Math.round(seasonTotals.autumn)} kWh`;
+
+      calculateROI();
+    }
+
+    /* Electrical & Inverter Calculations */
+    function calculateElectrical() {
+      const kwp = (app.panels * app.watt) / 1000.0;
+      document.getElementById('elec-dc-kwp').textContent = `${kwp.toFixed(2)} kWp`;
+
+      let invKw = 5.0;
+      if (kwp > 5.5 && kwp <= 8.5) invKw = 8.0;
+      else if (kwp > 8.5 && kwp <= 11.5) invKw = 10.0;
+      else if (kwp > 11.5 && kwp <= 16.0) invKw = 15.0;
+      else if (kwp > 16.0) invKw = Math.ceil(kwp / 5) * 5.0;
+
+      document.getElementById('stat-inverter-rating').textContent = `${invKw.toFixed(1)} kW Hybrid`;
+      document.getElementById('elec-inverter-desc').textContent = `${invKw.toFixed(1)}kW Hybrid (Deye / Growatt / Solis)`;
+
+      const vmpModule = 42.5;
+      const vocModule = 51.5;
+      const totalVmp = Math.round(app.panels * vmpModule);
+      const totalVoc = Math.round(app.panels * vocModule);
+
+      document.getElementById('elec-string-config').textContent = `1 String × ${app.panels} Modules`;
+      document.getElementById('elec-string-vmp').textContent = `~ ${totalVmp} V`;
+      document.getElementById('elec-string-voc').textContent = `~ ${totalVoc} V`;
+
+      const cableLen = parseFloat(document.getElementById('in-cable-length').value) || 18;
+      const currentA = 13.5;
+      const copperResistivity = 0.0175;
+
+      const dropV_6mm = (2 * cableLen * currentA * copperResistivity) / 6.0;
+      const dropPercent_6mm = (dropV_6mm / totalVmp) * 100;
+
+      document.getElementById('elec-cable-size').textContent = cableLen > 30 ? "10.0 mm² PV1-F" : "6.0 mm² PV1-F";
+      document.getElementById('elec-voltage-drop').textContent = `${dropPercent_6mm.toFixed(2)}% (< 2% تەواوە)`;
+    }
+
+    /* Financial ROI Engine */
+    function onRunakiTypeChange() {
+      const select = document.getElementById('in-runaki-type');
+      if (select) {
+        document.getElementById('in-runaki-rate').value = select.value;
+      }
+      calculateROI();
+    }
+
+    function calculateROI() {
+      const systemCostUSD = parseFloat(document.getElementById('in-system-cost').value) || 4500;
+      const rate100USD = parseFloat(document.getElementById('in-exchange-rate').value) || 150000;
+      const usdToIqd = rate100USD / 100.0;
+
+      const runakiRateIQD = parseFloat(document.getElementById('in-runaki-rate').value) || 72;
+      const monthlyConsumptionKwh = parseFloat(document.getElementById('in-monthly-consumption').value) || 800;
+      const genAmps = parseFloat(document.getElementById('in-gen-amps').value) || 0;
+      const genPricePerAmpIQD = parseFloat(document.getElementById('in-gen-price').value) || 16000;
+
+      const monthlySolarGenKwh = cachedAnnualKwh / 12.0;
+      const oldMonthlyBillIQD = monthlyConsumptionKwh * runakiRateIQD;
+      
+      const remainingMonthlyKwh = Math.max(0, monthlyConsumptionKwh - monthlySolarGenKwh);
+      const newMonthlyBillIQD = remainingMonthlyKwh * runakiRateIQD;
+
+      const monthlyRunakiSavingIQD = oldMonthlyBillIQD - newMonthlyBillIQD;
+      const annualRunakiSavingIQD = monthlyRunakiSavingIQD * 12.0;
+      const annualRunakiSavingUSD = annualRunakiSavingIQD / usdToIqd;
+
+      const solarCoveragePercent = Math.min(100, Math.round((monthlySolarGenKwh / monthlyConsumptionKwh) * 100));
+
+      const monthlyGenSavingIQD = genAmps * genPricePerAmpIQD;
+      const annualGenSavingIQD = monthlyGenSavingIQD * 12.0;
+      const annualGenSavingUSD = annualGenSavingIQD / usdToIqd;
+
+      const totalAnnualSavingIQD = annualRunakiSavingIQD + annualGenSavingIQD;
+      const totalAnnualSavingUSD = totalAnnualSavingIQD / usdToIqd;
+      const totalMonthlySavingIQD = totalAnnualSavingIQD / 12.0;
+      const totalMonthlySavingUSD = totalAnnualSavingUSD / 12.0;
+
+      let paybackText = "";
+      if (totalAnnualSavingUSD > 0) {
+        const paybackYears = systemCostUSD / totalAnnualSavingUSD;
+        const yearsInt = Math.floor(paybackYears);
+        const monthsRemainder = Math.round((paybackYears - yearsInt) * 12);
+        
+        if (app.lang === 'ku') paybackText = `${yearsInt} ساڵ و ${monthsRemainder} مانگ`;
+        else if (app.lang === 'ar') paybackText = `${yearsInt} سنة و ${monthsRemainder} أشهر`;
+        else paybackText = `${yearsInt} yrs & ${monthsRemainder} mos`;
+      } else {
+        paybackText = "N/A";
+      }
+
+      document.getElementById('stat-payback-years').textContent = paybackText;
+
+      document.getElementById('out-old-bill').textContent = `${Math.round(oldMonthlyBillIQD).toLocaleString()} دینار`;
+      document.getElementById('out-new-bill').textContent = `${Math.round(newMonthlyBillIQD).toLocaleString()} دینار`;
+      document.getElementById('out-solar-coverage').textContent = `~ ${solarCoveragePercent}%`;
+
+      document.getElementById('out-runaki-annual').textContent = `${Math.round(annualRunakiSavingIQD).toLocaleString()} دینار`;
+      document.getElementById('out-runaki-annual-usd').textContent = `(~ $${Math.round(annualRunakiSavingUSD).toLocaleString()})`;
+
+      document.getElementById('out-gen-annual').textContent = `${Math.round(annualGenSavingIQD).toLocaleString()} دینار`;
+      document.getElementById('out-gen-annual-usd').textContent = `(~ $${Math.round(annualGenSavingUSD).toLocaleString()})`;
+
+      document.getElementById('out-total-monthly').textContent = `~ ${Math.round(totalMonthlySavingIQD).toLocaleString()} دینار`;
+      document.getElementById('out-total-monthly-usd').textContent = `(~ $${Math.round(totalMonthlySavingUSD).toLocaleString()} / ${app.lang === 'en' ? 'mo' : 'مانگ'})`;
+
+      document.getElementById('out-total-annual').textContent = `~ ${Math.round(totalAnnualSavingIQD).toLocaleString()} دینار`;
+      document.getElementById('out-total-annual-usd').textContent = `(~ $${Math.round(totalAnnualSavingUSD).toLocaleString()} / ${app.lang === 'en' ? 'yr' : 'ساڵ'})`;
+    }
+
+    /* Report Modal Trigger & Population */
+    function openReportModal() {
+      const modal = document.getElementById('report-modal');
+      if (!modal) return;
+
+      const d = new Date();
+      document.getElementById('rep-date').textContent = `Date: ${d.toLocaleDateString()}`;
+
+      const kwp = (app.panels * app.watt) / 1000.0;
+      document.getElementById('rep-dc-kwp').textContent = `${kwp.toFixed(2)} kWp`;
+
+      const shapeNames = {
+        a_frame: "A-Frame Truss",
+        sandwich: "Sandwich Mini-Rail",
+        canopy: "Pergola Canopy",
+        monopole: "Cantilever Monopole",
+        carport: "Carport Shelter"
+      };
+      document.getElementById('rep-shape').textContent = shapeNames[app.shape] || "Standard Mounting";
+      document.getElementById('rep-annual-kwh').textContent = `${Math.round(cachedAnnualKwh).toLocaleString()} kWh`;
+      document.getElementById('rep-payback').textContent = document.getElementById('stat-payback-years').textContent;
+
+      document.getElementById('rep-front-h').textContent = `${app.frontH.toFixed(2)} m`;
+      document.getElementById('rep-back-h').textContent = `${app.backH.toFixed(2)} m`;
+      document.getElementById('rep-slope-l').textContent = `${app.slopeL.toFixed(2)} m`;
+      document.getElementById('rep-tilt').textContent = `${app.tilt}°`;
+
+      document.getElementById('rep-runaki-sav').textContent = document.getElementById('out-runaki-annual').textContent;
+      document.getElementById('rep-gen-sav').textContent = document.getElementById('out-gen-annual').textContent;
+      document.getElementById('rep-tot-sav').textContent = document.getElementById('out-total-annual').textContent;
+
+      document.getElementById('rep-load-peak').textContent = `${document.getElementById('load-sum-watts').textContent} (${document.getElementById('load-sum-amps').textContent})`;
+      document.getElementById('rep-bat-size').textContent = `${app.batteryKwh} kWh LiFePO4`;
+      document.getElementById('rep-bat-runtime').textContent = document.getElementById('battery-runtime-hours').textContent;
+
+      // Clone BOM rows to proposal
+      const sourceBOM = document.getElementById('bom-table-body');
+      const targetBOM = document.getElementById('rep-bom-tbody');
+      if (sourceBOM && targetBOM) {
+        targetBOM.innerHTML = sourceBOM.innerHTML;
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeReportModal() {
+      const modal = document.getElementById('report-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function downloadReportHTML() {
+      const reportContent = document.getElementById('report-modal-content').outerHTML;
+      const fullDoc = `<!DOCTYPE html><html lang="${app.lang}" dir="${app.lang === 'en' ? 'ltr' : 'rtl'}"><head><meta charset="UTF-8"><title>Hawdang Mustafa - Solar Proposal</title><script src="https://cdn.tailwindcss.com"><\/script><style>body{background:#0b0f19;color:#e2e8f0;font-family:sans-serif;padding:24px;}.no-print{display:none;}</style></head><body><div class="max-w-4xl mx-auto">${reportContent}</div></body></html>`;
+      
+      const blob = new Blob([fullDoc], { type: 'text/html' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `Hawdang-Mustafa-Solar-Proposal-${Date.now()}.html`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    /* Splash Screen Dismiss */
+    function dismissSplash() {
+      const splash = document.getElementById('splashScreen');
+      if (splash) {
+        splash.style.opacity = '0';
+        splash.style.pointerEvents = 'none';
+        setTimeout(() => splash.remove(), 700);
+      }
+    }
+
+    /* Touch & Drag Orbit Listeners */
+    window.addEventListener('load', () => {
+      const canvas = document.getElementById('structure-canvas');
+      if (canvas) {
+        canvas.addEventListener('mousedown', e => {
+          isDraggingVisualizer = true;
+          prevMouseX = e.clientX;
+        });
+        window.addEventListener('mouseup', () => isDraggingVisualizer = false);
+        window.addEventListener('mousemove', e => {
+          if (!isDraggingVisualizer) return;
+          const dx = e.clientX - prevMouseX;
+          app.rotAngle += dx * 0.008;
+          prevMouseX = e.clientX;
+          renderStructureVisualizer();
+        });
+
+        canvas.addEventListener('touchstart', e => {
+          if (e.touches.length === 1) {
+            isDraggingVisualizer = true;
+            prevMouseX = e.touches[0].clientX;
+          }
+        });
+        window.addEventListener('touchend', () => isDraggingVisualizer = false);
+        window.addEventListener('touchmove', e => {
+          if (!isDraggingVisualizer || e.touches.length !== 1) return;
+          const dx = e.touches[0].clientX - prevMouseX;
+          app.rotAngle += dx * 0.008;
+          prevMouseX = e.touches[0].clientX;
+          renderStructureVisualizer();
+        });
+      }
+    });
+
+    /* App Startup */
+    window.addEventListener('DOMContentLoaded', () => {
+      const progress = document.getElementById('splashProgress');
+      if (progress) progress.style.width = '100%';
+      setTimeout(dismissSplash, 1800);
+
+      renderAppliancesTable();
+      setLanguage('ku');
+    });
+
+    window.addEventListener('resize', () => {
+      renderStructureVisualizer();
+      renderArCanvas();
+    });
+  </script>
+</body>
+</html>
